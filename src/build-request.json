@@ -1,0 +1,50 @@
+{
+  "kind": "build_request",
+  "title": "Improve the RizzAssist logo artwork (same filename/dimensions)",
+  "priority": "normal",
+  "requirements": [
+    {
+      "id": "REQ-24",
+      "text": "Replace the existing generated RizzAssist logo image with a higher-quality, more visually striking logo while keeping the exact same filename and dimensions so it continues to render everywhere it is referenced (including the header image at `/assets/generated/rizzassist-logo.dim_512x256.png`).",
+      "target": "frontend",
+      "source": {
+        "messageIds": [
+          "msg-4"
+        ],
+        "quotes": [
+          "MAKE THE DAMN LOGO BETTER"
+        ]
+      },
+      "acceptanceCriteria": [
+        "The file `frontend/public/assets/generated/rizzassist-logo.dim_512x256.png` is updated with improved artwork.",
+        "The updated logo retains the exact dimensions implied by the filename (`512x256`) and the exact same filename/path.",
+        "The header continues to render the logo without any code changes required to references (i.e., `AppHeader` still points to `/assets/generated/rizzassist-logo.dim_512x256.png`)."
+      ]
+    }
+  ],
+  "constraints": [
+    "Keep the exact same logo asset filename and dimensions: `rizzassist-logo.dim_512x256.png` (512x256).",
+    "Use English for any user-facing text."
+  ],
+  "nonGoals": [
+    "Do not change backend logic or data models.",
+    "Do not add new pages or user flows.",
+    "Do not rename the product or alter existing navigation/content."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": [
+      "Improve the logo artwork (rizzassist-logo.dim_512x256.png > rizzassist-logo.dim_512x256.png)"
+    ]
+  },
+  "userProfileUpdate": {
+    "goalsToAdd": [],
+    "goalsToRemove": [],
+    "preferencesToAdd": [],
+    "preferencesToRemove": [],
+    "miscToAdd": [],
+    "miscToRemove": [],
+    "fieldsToSet": {},
+    "fieldsToDelete": []
+  }
+}

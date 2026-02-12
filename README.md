@@ -1,2 +1,3 @@
-# pickup-line-finder-with-instagram-sourced-submissions-and-usage-guidance-exclude
-Exported from Caffeine project: RizzAssist
+## 
+
+To run app build and run docker image: `docker build -t app . docker run -it --network host app`

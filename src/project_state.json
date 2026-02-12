@@ -1,0 +1,257 @@
+{
+  "schemaVersion": "1.0.0",
+  "projectStateVersion": 19,
+  "summary": "Website that discovers pickup lines from Instagram (excluding one-liners) and explains how users can use them. Rename product to RizzAssist and add the ability to fetch/add lines directly from Instagram (not only user-submitted URLs/text).",
+  "architectural_notes": [
+    "Instagram auto-search/import may require handling platform restrictions (auth, rate limits) and/or using an official API; scraping may be unreliable and risky."
+  ],
+  "known_issues": [
+    "Build/deploy pipeline hit an internal configuration error; user requested a rerun.",
+    "Some added UI images/decorations show visible 'vector' artifacts/outlines; needs cleanup/asset/style fix.",
+    "Secondary color/theme accent is not the intended dark red (as per reference image); needs adjustment to match dark red."
+  ],
+  "isFixRequest": true,
+  "imageRequirements": "## Edit Images\n- Improve the logo artwork (rizzassist-logo.dim_512x256.png > rizzassist-logo.dim_512x256.png)",
+  "existing_features": [
+    {
+      "id": "feature-create-a-web-app-that-lets-users-discover-multi-line-pickup-lines-that-are-sourced-from-instagram-content-by-allowing-users-to-submit-an-instagram-post-url-and-or-paste-the-pickup-line-text-from-the-post",
+      "title": "Create a web app that lets users discover multi-line pickup lines that are sourced from Instagram content, by allowing users to submit an Instagram post URL and/or paste the pickup line text from the post.",
+      "reqIds": [
+        "REQ-1"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enforce-a-rule-that-one-line-pickup-lines-are-rejected-only-accept-pickup-lines-that-contain-multiple-lines-of-dialogue-or-multiple-lines-separated-by-line-breaks-e-g-at-least-2-line-breaks-or-at-least-3-non-empty-lines",
+      "title": "Enforce a rule that one-line pickup lines are rejected: only accept pickup lines that contain multiple lines of dialogue or multiple lines separated by line breaks (e.g., at least 2 line breaks or at least 3 non-empty lines).",
+      "reqIds": [
+        "REQ-2"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-for-each-stored-pickup-line-generate-and-display-a-how-to-use-it-guide-in-english-that-explains-delivery-timing-context-and-a-suggested-follow-up-message-without-using-external-ai-llm-services",
+      "title": "For each stored pickup line, generate and display a \"How to use it\" guide in English that explains delivery, timing/context, and a suggested follow-up message, without using external AI/LLM services.",
+      "reqIds": [
+        "REQ-3"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-implement-pickup-line-browsing-features-a-feed-list-view-a-random-pickup-line-action-and-basic-search-by-keyword",
+      "title": "Implement pickup line browsing features: a feed/list view, a random pickup line action, and basic search (by keyword).",
+      "reqIds": [
+        "REQ-4"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-basic-content-moderation-controls-to-reduce-low-quality-entries-prevent-empty-whitespace-submissions-cap-maximum-length-and-provide-a-report-button-per-pickup-line-stored-as-a-flag-count",
+      "title": "Add basic content moderation controls to reduce low-quality entries: prevent empty/whitespace submissions, cap maximum length, and provide a report button per pickup line (stored as a flag/count).",
+      "reqIds": [
+        "REQ-5"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-apply-a-cohesive-creative-visual-theme-for-the-app-colors-typography-layout-with-a-distinct-playful-style-appropriate-for-a-pickup-line-discovery-site-and-use-it-consistently-across-all-pages",
+      "title": "Apply a cohesive, creative visual theme for the app (colors, typography, layout) with a distinct playful style appropriate for a pickup-line discovery site, and use it consistently across all pages.",
+      "reqIds": [
+        "REQ-6"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-and-render-generated-static-image-assets-for-branding-logo-and-a-small-decorative-illustration-from-frontend-public-assets-generated",
+      "title": "Add and render generated static image assets for branding (logo and a small decorative illustration) from frontend/public/assets/generated.",
+      "reqIds": [
+        "REQ-7"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-resolve-the-internal-configuration-error-in-the-build-deploy-pipeline-and-rerun-the-build-so-the-latest-app-version-successfully-builds-and-deploys",
+      "title": "Resolve the internal configuration error in the build/deploy pipeline and rerun the build so the latest app version successfully builds and deploys.",
+      "reqIds": [
+        "REQ-8"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-rename-the-app-product-to-rizzassist-across-the-frontend-ui-and-metadata-including-at-minimum-the-header-brand-alt-text-and-the-html-document-title",
+      "title": "Rename the app/product to \"RizzAssist\" across the frontend UI and metadata, including (at minimum) the header brand alt text and the HTML document title.",
+      "reqIds": [
+        "REQ-9"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-revamp-the-overall-visual-design-of-the-rizzassist-frontend-to-look-significantly-more-polished-complex-and-beautiful-while-keeping-all-existing-functionality-browse-search-random-submit-detail-report-intact",
+      "title": "Revamp the overall visual design of the RizzAssist frontend to look significantly more polished, complex, and \"beautiful\" while keeping all existing functionality (browse/search/random/submit/detail/report) intact.",
+      "reqIds": [
+        "REQ-11"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-add-more-decorative-static-image-assets-illustrations-patterns-stickers-and-incorporate-them-into-the-ui-across-pages-e-g-header-hero-feed-empty-state-submit-page-side-decoration-and-or-footer-to-create-a-more-visually-dense-experience",
+      "title": "Add more decorative static image assets (illustrations/patterns/stickers) and incorporate them into the UI across pages (e.g., header/hero, feed empty state, submit page side decoration, and/or footer) to create a more visually dense experience.",
+      "reqIds": [
+        "REQ-12"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-upgrade-the-feed-presentation-to-feel-more-premium-and-information-rich-without-adding-new-backend-data-enhance-the-pickup-line-cards-and-surrounding-ui-with-improved-typography-spacing-subtle-background-treatments-and-more-engaging-loading-empty-states-that-use-the-new-imagery",
+      "title": "Upgrade the feed presentation to feel more premium and information-rich (without adding new backend data): enhance the pickup line cards and surrounding UI with improved typography, spacing, subtle background treatments, and more engaging loading/empty states that use the new imagery.",
+      "reqIds": [
+        "REQ-13"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-enhance-the-submit-view-and-the-pickup-line-detail-modal-to-match-the-upgraded-aesthetic-e-g-add-a-decorative-header-area-richer-section-styling-and-optional-side-illustration-while-keeping-form-validation-and-report-actions-unchanged",
+      "title": "Enhance the submit view and the pickup-line detail modal to match the upgraded aesthetic (e.g., add a decorative header area, richer section styling, and optional side illustration) while keeping form validation and report actions unchanged.",
+      "reqIds": [
+        "REQ-14"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-improve-the-existing-rizzassist-logo-artwork-by-updating-the-generated-logo-image-to-a-more-visually-striking-more-colorful-version-while-keeping-the-same-filename-and-dimensions-so-it-renders-everywhere-it-is-currently-used",
+      "title": "Improve the existing RizzAssist logo artwork by updating the generated logo image to a more visually striking, more colorful version while keeping the same filename and dimensions so it renders everywhere it is currently used.",
+      "reqIds": [
+        "REQ-15"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-increase-the-overall-vibrancy-of-the-site-s-color-palette-while-preserving-readability-by-updating-the-global-theme-tokens-and-key-gradient-colored-ui-surfaces-used-across-the-app-header-background-hero-sections-buttons-icons-to-use-more-saturated-accent-and-primary-colors-consistent-with-the-existing-playful-style",
+      "title": "Increase the overall vibrancy of the site’s color palette (while preserving readability) by updating the global theme tokens and key gradient/colored UI surfaces used across the app (header, background, hero sections, buttons/icons) to use more saturated accent and primary colors consistent with the existing playful style.",
+      "reqIds": [
+        "REQ-16"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-the-random-side-things-decorative-elements-across-the-ui-by-deleting-or-disabling-non-essential-decorative-layers-corner-flourishes-sticker-accents-and-similar-side-corner-decorations-in-the-layout-header-feed-cards-submit-page-and-pickup-line-detail-modal-while-keeping-core-content-layout-intact",
+      "title": "Remove the “random side things” decorative elements across the UI by deleting or disabling non-essential decorative layers (corner flourishes, sticker accents, and similar side/corner decorations) in the layout, header, feed cards, submit page, and pickup-line detail modal, while keeping core content/layout intact.",
+      "reqIds": [
+        "REQ-17"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-increase-the-overall-vibrancy-and-amount-of-color-in-the-ui-background-gradients-primary-secondary-accent-usage-and-key-surfaces-while-preserving-text-readability-and-contrast-in-both-light-and-dark-modes",
+      "title": "Increase the overall vibrancy and amount of color in the UI (background gradients, primary/secondary/accent usage, and key surfaces) while preserving text readability and contrast in both light and dark modes.",
+      "reqIds": [
+        "REQ-18"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-eliminate-visible-vector-artifacts-outlines-in-rendered-decorative-images-by-updating-image-rendering-styling-e-g-remove-pixelated-crisp-edge-rendering-and-or-replacing-affected-generated-image-assets-with-clean-anti-aliased-versions-that-do-not-show-vector-edges",
+      "title": "Eliminate visible “vector” artifacts/outlines in rendered decorative images by updating image rendering/styling (e.g., remove pixelated/crisp-edge rendering) and/or replacing affected generated image assets with clean, anti-aliased versions that do not show vector edges.",
+      "reqIds": [
+        "REQ-19"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-current-rizzassist-logo-image-used-in-the-header-with-a-new-logo-artwork-while-keeping-the-exact-same-asset-filename-and-dimensions-so-it-continues-to-render-everywhere-it-is-currently-referenced-e-g-in-appheader",
+      "title": "Replace the current RizzAssist logo image used in the header with a new logo artwork while keeping the exact same asset filename and dimensions so it continues to render everywhere it is currently referenced (e.g., in AppHeader).",
+      "reqIds": [
+        "REQ-20"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-app-s-secondary-theme-color-to-a-clearly-dark-red-that-visually-matches-the-user-provided-reference-image-and-ensure-this-dark-red-is-consistently-used-anywhere-the-secondary-accent-color-is-intended-across-the-ui-including-gradients-and-highlighted-surfaces",
+      "title": "Update the app’s secondary theme color to a clearly dark red that visually matches the user-provided reference image, and ensure this dark red is consistently used anywhere the secondary/accent color is intended across the UI (including gradients and highlighted surfaces).",
+      "reqIds": [
+        "REQ-21"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-remove-or-refactor-any-hard-coded-non-theme-red-pink-orange-gradient-color-stops-currently-used-for-key-background-hero-gradients-so-that-they-derive-from-the-updated-theme-tokens-primary-secondary-accent-and-stay-consistent-after-the-dark-red-change",
+      "title": "Remove or refactor any hard-coded non-theme red/pink/orange gradient color stops currently used for key background/hero gradients so that they derive from the updated theme tokens (primary/secondary/accent) and stay consistent after the dark red change.",
+      "reqIds": [
+        "REQ-22"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-update-the-app-s-secondary-theme-color-to-exactly-match-the-dark-red-shade-from-the-user-provided-reference-picture-by-adjusting-the-theme-tokens-in-frontend-src-index-css-for-both-root-and-dark-at-minimum-secondary-and-any-related-foreground-token-if-required-for-readability-so-all-ui-surfaces-that-use-secondary-including-gradient-stops-like-via-secondary-and-highlight-backgrounds-like-to-secondary-render-with-the-exact-intended-shade",
+      "title": "Update the app’s secondary theme color to exactly match the dark red shade from the user-provided reference picture by adjusting the theme tokens in `frontend/src/index.css` for both `:root` and `.dark` (at minimum `--secondary`, and any related foreground token if required for readability), so all UI surfaces that use `secondary` (including gradient stops like `via-secondary/...` and highlight backgrounds like `to-secondary/...`) render with the exact intended shade.",
+      "reqIds": [
+        "REQ-23"
+      ],
+      "version": 1
+    },
+    {
+      "id": "feature-replace-the-existing-generated-rizzassist-logo-image-with-a-higher-quality-more-visually-striking-logo-while-keeping-the-exact-same-filename-and-dimensions-so-it-continues-to-render-everywhere-it-is-referenced-including-the-header-image-at-assets-generated-rizzassist-logo-dim-512x256-png",
+      "title": "Replace the existing generated RizzAssist logo image with a higher-quality, more visually striking logo while keeping the exact same filename and dimensions so it continues to render everywhere it is referenced (including the header image at `/assets/generated/rizzassist-logo.dim_512x256.png`).",
+      "reqIds": [
+        "REQ-24"
+      ],
+      "version": 1
+    }
+  ],
+  "new_feature_requests": [
+    {
+      "id": "AR-1",
+      "summary": "Build a website that finds pickup lines from Instagram and provides guidance on how to use them, excluding one-line pickup lines.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-2",
+      "summary": "Add functionality to search Instagram and import/add pickup lines directly (system-sourced), rather than relying only on user-submitted post URLs or pasted text.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-3",
+      "summary": "Rename the app/product to \"RizzAssist\" across the UI/branding (title, headers, metadata, logo wordmark as needed).",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-6",
+      "summary": "Add a non-Instagram-API way to have the app include pickup lines beyond user-submitted entries by seeding the backend with an initial set of multi-line pickup lines at deployment (system-provided), while keeping the existing multi-line validation rules.",
+      "reqIds": [
+        "REQ-10"
+      ],
+      "status": "pending"
+    },
+    {
+      "id": "AR-7",
+      "summary": "Improve the UI/visual design to look more complex and beautiful, including adding more images/visual elements across the site.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-8",
+      "summary": "Improve the RizzAssist logo design and update the site color palette to be more vibrant/colourful.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-9",
+      "summary": "Remove unwanted/random side decorative elements and clean up image rendering so vector/artifact outlines are not visible.",
+      "reqIds": [],
+      "status": "pending"
+    },
+    {
+      "id": "AR-10",
+      "summary": "Change/update the RizzAssist logo (refresh the logo artwork/wordmark).",
+      "reqIds": [],
+      "status": "pending"
+    }
+  ],
+  "gameProjectType": "none",
+  "projectName": "RizzAssist",
+  "clarification_mode": "instant",
+  "clarification_rounds": 0
+}

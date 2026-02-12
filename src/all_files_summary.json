@@ -1,0 +1,22 @@
+{
+  "backend/main.mo": "Motoko canister managing multi-line pickup lines with validation, storage, reporting, and usage‑guide generation.",
+  "feature_evidence.json": "Feature evidence report describing a logo‑replacement task and related components.",
+  "frontend-file-summaries.txt": "Text file listing summarized descriptions of all frontend source files and assets.",
+  "frontend/index.css": "Global Tailwind base and dark‑mode color variables using OKLCH values with shared styling defaults.",
+  "frontend/index.html": "HTML entry point mounting the React app and loading main.tsx.",
+  "frontend/src/App.tsx": "Main React app managing feed/submit views, search, random selection, and detail modal state.",
+  "frontend/src/components/AppHeader.tsx": "Sticky header with logo and navigation buttons for browsing, random selection, and submitting lines.",
+  "frontend/src/components/AppLayout.tsx": "Page layout providing gradient backgrounds, header/footer, and content container.",
+  "frontend/src/components/PickupLineDetail.tsx": "Modal showing a pickup line, copy function, usage guide, and reporting option.",
+  "frontend/src/components/PickupLineFeed.tsx": "Feed view with hero section, search bar, filtering, loading skeletons, and reporting controls.",
+  "frontend/src/components/StickerIcon.tsx": "Renders a 64px sticker icon by selecting a background sprite position based on index.",
+  "frontend/src/components/SubmitPickupLineForm.tsx": "Form component for submitting a pickup line with validation, Instagram URL input, and mutation handling.",
+  "frontend/src/hooks/useActor.ts": "Creates and manages an authenticated or anonymous backend actor and refreshes dependent queries on identity change.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Provides Internet Identity auth context, handling login, logout, stored identities, and status tracking.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for fetching, submitting, and reporting pickup lines through the backend actor.",
+  "frontend/src/index.css": "Defines Tailwind base styles, color variables, dark mode tokens, and utility classes.",
+  "frontend/src/lib/validation.ts": "Validates pickup line text for length and minimum non-empty lines, returning structured errors.",
+  "frontend/src/main.tsx": "Bootstraps the React app with QueryClient and InternetIdentityProvider.",
+  "frontend/tailwind.config.js": "Tailwind configuration extending theme colors, typography, containers, radii, and animations.",
+  "project_state.json": "Defines the project’s current version, goals, issues, and feature list for the RizzAssist Instagram-based pickup-line web app. Includes requirements for Instagram import, UI/theme fixes, moderation, browsing, and image updates."
+}

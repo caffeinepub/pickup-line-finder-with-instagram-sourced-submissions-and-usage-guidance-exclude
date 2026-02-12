@@ -1,0 +1,15 @@
+{
+  "frontend/src/App.tsx": "Main application component managing view state (feed/submit), search filtering, random pickup line selection, and detail dialog display with corrected prop names for PickupLineDetail component.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks for fetching all pickup lines, submitting new pickup lines, and reporting inappropriate content with automatic cache invalidation.",
+  "frontend/src/components/AppLayout.tsx": "Clean layout wrapper with theme-token-driven gradient background (primary/secondary/accent) and subtle pattern overlay, maintaining header/main/footer structure without decorative flourishes.",
+  "frontend/src/components/AppHeader.tsx": "Minimal sticky header with logo and navigation buttons, removing all decorative sticker accents while keeping vibrant primary color styling and backdrop blur.",
+  "frontend/src/components/PickupLineFeed.tsx": "Feed view with theme-token gradient hero section (primary/secondary/accent), colorful search bar, and clean card design featuring smooth image rendering for illustrations.",
+  "frontend/src/components/SubmitPickupLineForm.tsx": "Submission form with theme-token gradient header section (primary/secondary/accent) and clean card styling, removing hard-coded OKLCH literals while maintaining colorful borders and accent-colored alerts.",
+  "frontend/src/components/PickupLineDetail.tsx": "Modal dialog with theme-token gradient backgrounds (primary/secondary/accent) for main content and usage guide sections, removing hard-coded OKLCH stops while maintaining enhanced visual hierarchy and readability.",
+  "frontend/src/lib/validation.ts": "Client-side validation utilities enforcing multiline requirement (3+ non-empty lines), empty text rejection, and max length (500 chars).",
+  "frontend/src/index.css": "Global styles with OKLCH color system featuring exact deep burgundy secondary color (L 0.37, C 0.19, H 18 for light mode; L 0.43, C 0.18, H 18 for dark mode) matching the reference image, with vibrant coral primary, bright teal accent, and smooth image rendering utilities for both light and dark modes.",
+  "frontend/tailwind.config.js": "Extended Tailwind configuration with display font family, additional border radius utilities (xl/2xl/3xl), and enhanced box shadow scale (soft/medium/large) for premium visual depth.",
+  "frontend/index.html": "HTML entry point with RizzAssist branding in the document title.",
+  "frontend/src/components/StickerIcon.tsx": "Helper component for rendering sticker-style decorative accents with smooth anti-aliased rendering instead of pixelated crisp-edges setting.",
+  "frontend/public/assets/generated/rizzassist-logo.dim_512x256.png": "Improved RizzAssist logo featuring bold gradient typography, decorative heart icon, sparkle accents, and tagline with modern visual appeal at 512x256 dimensions."
+}

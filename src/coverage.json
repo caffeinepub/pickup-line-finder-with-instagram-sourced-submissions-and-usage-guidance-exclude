@@ -1,0 +1,37 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-12T14:36:21.320Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 1,
+    "implemented": 1,
+    "items": [
+      {
+        "id": "REQ-24",
+        "summary": "Replace the existing generated RizzAssist logo image with a higher-quality, more visually striking logo while keeping the exact same filename and dimensions so it continues to render everywhere it is referenced (including the header image at `/assets/generated/rizzassist-logo.dim_512x256.png`).",
+        "status": "implemented",
+        "plannedFiles": [
+          "frontend/public/assets/generated/rizzassist-logo.dim_512x256.png"
+        ],
+        "matchedFiles": [
+          "frontend/public/assets/generated/rizzassist-logo.dim_512x256.png"
+        ]
+      }
+    ]
+  },
+  "changedFiles": [
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-file-summaries.txt",
+    "frontend-implementation-plan.json",
+    "frontend/public/assets/generated/rizzassist-logo.dim_512x256.png",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}
