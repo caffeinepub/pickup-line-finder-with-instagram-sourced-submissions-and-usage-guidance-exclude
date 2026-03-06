@@ -74,8 +74,8 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
           </h1>
           <div className="w-16 h-1 bg-primary rounded-full mx-auto mb-4" />
           <p className="text-muted-foreground text-base leading-relaxed max-w-sm mx-auto">
-            Submit your best multi-line pickup line and help others level up
-            their conversation game.
+            Submit your best rizz line — short or long — and help others level
+            up their conversation game.
           </p>
         </div>
 
@@ -132,7 +132,7 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
                   data-ocid="submit.textarea"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Must be at least 3 lines. Each new line = press Enter.
+                  Any length is fine. Each new line = press Enter.
                 </p>
               </div>
 
@@ -210,9 +210,9 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
                 Submission Guidelines
               </p>
               <p className="text-xs text-muted-foreground leading-relaxed">
-                Lines must be multi-line (at least 3 lines), appropriate, and
-                respectful. All submissions are reviewed before publishing.
-                Inappropriate content will be removed.
+                Lines can be any length — short one-liners or long multi-line
+                exchanges are both welcome. Keep it appropriate and respectful.
+                All submissions are reviewed before publishing.
               </p>
             </div>
           </div>

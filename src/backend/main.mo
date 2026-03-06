@@ -6,9 +6,9 @@ import Nat "mo:core/Nat";
 import Char "mo:core/Char";
 import List "mo:core/List";
 import Iter "mo:core/Iter";
-import Migration "migration";
 
-(with migration = Migration.run)
+
+
 actor {
   type Status = { #pending; #approved; #rejected };
 
