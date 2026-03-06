@@ -92,6 +92,7 @@ export class ExternalBlob {
 export interface PickupLine {
     id: bigint;
     status: Status;
+    likeCount: bigint;
     reportCount: bigint;
     isSystem: boolean;
     text: string;
@@ -105,11 +106,13 @@ export enum Status {
 export interface backendInterface {
     approvePickupLine(id: bigint): Promise<void>;
     getAllPickupLines(): Promise<Array<PickupLine>>;
+    getApprovedPickupLines(): Promise<Array<PickupLine>>;
     getLineWithGuide(id: bigint): Promise<{
         howToUse: string;
         pickupLine: PickupLine;
     }>;
     getPendingPickupLines(): Promise<Array<PickupLine>>;
+    likePickupLine(id: bigint): Promise<void>;
     rejectPickupLine(id: bigint): Promise<void>;
     reportPickupLine(id: bigint): Promise<void>;
     submitPickupLine(text: string, instagramUrl: string | null): Promise<void>;
@@ -145,6 +148,20 @@ export class Backend implements backendInterface {
             return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
         }
     }
+    async getApprovedPickupLines(): Promise<Array<PickupLine>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getApprovedPickupLines();
+                return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getApprovedPickupLines();
+            return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+        }
+    }
     async getLineWithGuide(arg0: bigint): Promise<{
         howToUse: string;
         pickupLine: PickupLine;
@@ -174,6 +191,20 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getPendingPickupLines();
             return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async likePickupLine(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.likePickupLine(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.likePickupLine(arg0);
+            return result;
         }
     }
     async rejectPickupLine(arg0: bigint): Promise<void> {
@@ -231,6 +262,7 @@ function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Ar
 function from_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: bigint;
     status: _Status;
+    likeCount: bigint;
     reportCount: bigint;
     isSystem: boolean;
     text: string;
@@ -238,6 +270,7 @@ function from_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint
 }): {
     id: bigint;
     status: Status;
+    likeCount: bigint;
     reportCount: bigint;
     isSystem: boolean;
     text: string;
@@ -246,6 +279,7 @@ function from_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint
     return {
         id: value.id,
         status: from_candid_Status_n4(_uploadFile, _downloadFile, value.status),
+        likeCount: value.likeCount,
         reportCount: value.reportCount,
         isSystem: value.isSystem,
         text: value.text,

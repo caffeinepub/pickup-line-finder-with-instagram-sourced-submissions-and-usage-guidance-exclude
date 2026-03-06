@@ -1,38 +1,47 @@
 # RizzAssist
 
 ## Current State
-- Users can submit multi-line pickup lines via a form.
-- All submitted lines are immediately visible in the public feed.
-- Backend stores `PickupLine` records with `id`, `text`, `instagramUrl`, `reportCount`, `isSystem`.
-- Frontend has Browse / Random / Submit nav buttons plus a detail modal.
-- No approval workflow; no admin functionality exists.
+
+- Full-stack app with Motoko backend and React/TypeScript frontend.
+- Backend stores pickup lines with a `status` field: `#pending | #approved | #rejected`.
+- `submitPickupLine` creates lines with `#pending` status.
+- `getAllPickupLines()` returns ALL lines regardless of status — this is the root of the approval bug.
+- `getPendingPickupLines()` correctly filters to pending only (used by AdminPanel).
+- `approvePickupLine` and `rejectPickupLine` update the status field correctly in the backend.
+- Frontend community feed uses `getAllPickupLines()` and does NOT filter by status — so pending and rejected lines appear in the feed.
+- Like system is pure local React state (`useState`) per card — resets on refresh, not shared across users.
+- AI generator is a static lookup table (`aiRizzGenerator.ts`) that pattern-matches topics to pre-written lines. It is not actually AI-powered. The section exists in the UI but returns pre-canned results.
 
 ## Requested Changes (Diff)
 
 ### Add
-- `status` field on `PickupLine`: `#pending | #approved | #rejected`.
-- Backend `getPendingPickupLines()` — returns all lines with status `#pending`.
-- Backend `approvePickupLine(id)` — sets status to `#approved`.
-- Backend `rejectPickupLine(id)` — sets status to `#rejected`.
-- `getAllPickupLines()` modified to return only `#approved` lines to public users.
-- Frontend `AdminPanel` component — password-gated (`garvit`) page showing pending lines with Approve / Reject buttons.
-- "Admin" button in the header that opens a password modal; on correct password navigates to the admin panel view.
-- Admin panel shows a count badge of pending items on the button.
+- Backend: new query `getApprovedPickupLines()` that returns only lines with `#approved` status.
+- Backend: `likePickupLine(id)` mutation that increments a `likeCount` field stored on the line.
+- Backend: `PickupLine` type extended with `likeCount: Nat` field.
+- Frontend: seed data / existing system lines get `likeCount = 0` default.
+- AI Generator: replace static lookup with a smarter algorithmic generator that produces varied, contextually relevant lines using the topic as input. More varied output so it doesn't feel like a lookup table. Add many more topic templates and use topic interpolation so every topic produces unique lines.
 
 ### Modify
-- `submitPickupLine` now sets initial `status = #pending` instead of making the line immediately public.
-- `usePickupLines` hook — unchanged (already calls `getAllPickupLines` which will now filter to approved only).
-- `App.tsx` — add `admin` view type and render `AdminPanel` when active.
-- `AppHeader` — add Admin button that triggers password modal.
+- Backend: `getAllPickupLines()` renamed to keep existing use but community feed now calls `getApprovedPickupLines()` instead.
+- Frontend `usePickupLines` hook: change `queryFn` to call `getApprovedPickupLines()` instead of `getAllPickupLines()`.
+- Frontend `FeedCard`: replace local `useState` like with a call to `useLikePickupLine` mutation; read `likeCount` from the backend data rather than a random number. Like button optimistically updates count and is persisted.
+- Frontend `PickupLineFeed`: `visiblePickupLines` filter already handles `reportCount` threshold — keep that but remove any other filtering since backend now sends only approved lines.
 
 ### Remove
 - Nothing removed.
 
 ## Implementation Plan
-1. Update `main.mo`: add `status` variant type, update `PickupLine` type, update `submitPickupLine`, update `getAllPickupLines` to filter approved, add `getPendingPickupLines`, `approvePickupLine`, `rejectPickupLine`.
-2. Regenerate `backend.d.ts` to expose new methods.
-3. Add `useAdminQueries` hooks: `usePendingPickupLines`, `useApprovePickupLine`, `useRejectPickupLine`.
-4. Create `AdminPanel.tsx` — list pending lines with approve/reject actions, empty state.
-5. Create `AdminPasswordModal.tsx` — simple password input dialog, validates `garvit`.
-6. Update `AppHeader.tsx` — add Admin button with pending count badge, wire to password modal.
-7. Update `App.tsx` — add `admin` view, render `AdminPanel` when active.
+
+1. Update Motoko backend:
+   - Add `likeCount: Nat` to `PickupLine` type.
+   - Add `getApprovedPickupLines()` query that filters `status == #approved`.
+   - Add `likePickupLine(id: Nat)` shared function that increments `likeCount`.
+   - Update `submitPickupLine` to include `likeCount = 0` in new records.
+
+2. Regenerate backend (generate_motoko_code).
+
+3. Update frontend:
+   - `useQueries.ts`: add `useApprovedPickupLines` hook calling `getApprovedPickupLines()`, add `useLikePickupLine` mutation.
+   - `App.tsx`: switch from `usePickupLines` to `useApprovedPickupLines`.
+   - `FeedCard`: use backend `likeCount` from props, wire like button to `useLikePickupLine` mutation with optimistic update.
+   - `aiRizzGenerator.ts`: expand topic database significantly and add interpolation logic so every topic (even unknown) generates creative, varied multi-line pickup lines that feel fresh.

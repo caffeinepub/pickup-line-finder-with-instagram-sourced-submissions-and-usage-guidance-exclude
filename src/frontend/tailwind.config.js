@@ -16,12 +16,19 @@ export default {
         },
         extend: {
             fontFamily: {
+                display: [
+                    'Bricolage Grotesque',
+                    'Cabinet Grotesk',
+                    'ui-sans-serif',
+                    'system-ui',
+                    'sans-serif'
+                ],
                 sans: [
-                    'Inter',
+                    'Sora',
+                    'Plus Jakarta Sans',
+                    'ui-sans-serif',
+                    'system-ui',
                     '-apple-system',
-                    'BlinkMacSystemFont',
-                    'Segoe UI',
-                    'Roboto',
                     'sans-serif'
                 ],
                 mono: [
@@ -30,11 +37,6 @@ export default {
                     'Consolas',
                     'Monaco',
                     'monospace'
-                ],
-                display: [
-                    'Inter',
-                    'system-ui',
-                    'sans-serif'
                 ]
             },
             colors: {
@@ -89,9 +91,12 @@ export default {
             },
             boxShadow: {
                 xs: '0 1px 2px 0 rgba(0,0,0,0.05)',
-                soft: '0 2px 8px -2px rgba(0,0,0,0.08), 0 4px 12px -4px rgba(0,0,0,0.05)',
-                medium: '0 4px 16px -4px rgba(0,0,0,0.12), 0 8px 24px -8px rgba(0,0,0,0.08)',
-                large: '0 8px 32px -8px rgba(0,0,0,0.16), 0 12px 48px -12px rgba(0,0,0,0.12)'
+                soft: '0 2px 8px -2px rgba(0,0,0,0.25), 0 4px 12px -4px rgba(0,0,0,0.15)',
+                medium: '0 4px 16px -4px rgba(0,0,0,0.4), 0 8px 24px -8px rgba(0,0,0,0.25)',
+                large: '0 8px 32px -8px rgba(0,0,0,0.5), 0 12px 48px -12px rgba(0,0,0,0.3)',
+                'glow-red': '0 0 24px oklch(0.55 0.22 25 / 0.45), 0 0 8px oklch(0.55 0.22 25 / 0.3)',
+                'glow-red-sm': '0 0 12px oklch(0.55 0.22 25 / 0.35), 0 0 4px oklch(0.55 0.22 25 / 0.2)',
+                'glow-red-lg': '0 0 40px oklch(0.55 0.22 25 / 0.5), 0 0 80px oklch(0.55 0.22 25 / 0.2)'
             },
             keyframes: {
                 'accordion-down': {
@@ -101,11 +106,40 @@ export default {
                 'accordion-up': {
                     from: { height: 'var(--radix-accordion-content-height)' },
                     to: { height: '0' }
+                },
+                fadeInUp: {
+                    from: { opacity: '0', transform: 'translateY(24px)' },
+                    to: { opacity: '1', transform: 'translateY(0)' }
+                },
+                fadeInDown: {
+                    from: { opacity: '0', transform: 'translateY(-12px)' },
+                    to: { opacity: '1', transform: 'translateY(0)' }
+                },
+                shimmer: {
+                    '0%': { backgroundPosition: '-200% 0' },
+                    '100%': { backgroundPosition: '200% 0' }
+                },
+                pulseGlow: {
+                    '0%, 100%': {
+                        boxShadow: '0 0 8px oklch(0.55 0.22 25 / 0.3), 0 0 20px oklch(0.55 0.22 25 / 0.15)'
+                    },
+                    '50%': {
+                        boxShadow: '0 0 16px oklch(0.55 0.22 25 / 0.5), 0 0 36px oklch(0.55 0.22 25 / 0.3)'
+                    }
+                },
+                float: {
+                    '0%, 100%': { transform: 'translateY(0px)' },
+                    '50%': { transform: 'translateY(-8px)' }
                 }
             },
             animation: {
                 'accordion-down': 'accordion-down 0.2s ease-out',
-                'accordion-up': 'accordion-up 0.2s ease-out'
+                'accordion-up': 'accordion-up 0.2s ease-out',
+                'fade-in-up': 'fadeInUp 0.55s ease-out forwards',
+                'fade-in-down': 'fadeInDown 0.4s ease-out forwards',
+                'pulse-glow': 'pulseGlow 2.5s ease-in-out infinite',
+                'shimmer': 'shimmer 1.6s infinite',
+                'float': 'float 3s ease-in-out infinite'
             }
         }
     },

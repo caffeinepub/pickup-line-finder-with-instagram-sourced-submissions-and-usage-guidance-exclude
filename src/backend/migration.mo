@@ -2,22 +2,8 @@ import Map "mo:core/Map";
 import Nat "mo:core/Nat";
 
 module {
-  type Status = { #pending; #approved; #rejected };
-
-  type OldPickupLine = {
-    id : Nat;
-    text : Text;
-    instagramUrl : ?Text;
-    reportCount : Nat;
-    isSystem : Bool;
-  };
-
-  type OldActor = {
-    pickupLines : Map.Map<Nat, OldPickupLine>;
-    nextId : Nat;
-  };
-
-  type NewPickupLine = {
+  public type Status = { #pending; #approved; #rejected };
+  public type OldPickupLine = {
     id : Nat;
     text : Text;
     instagramUrl : ?Text;
@@ -26,7 +12,22 @@ module {
     status : Status;
   };
 
-  type NewActor = {
+  public type OldActor = {
+    pickupLines : Map.Map<Nat, OldPickupLine>;
+    nextId : Nat;
+  };
+
+  public type NewPickupLine = {
+    id : Nat;
+    text : Text;
+    instagramUrl : ?Text;
+    reportCount : Nat;
+    likeCount : Nat;
+    isSystem : Bool;
+    status : Status;
+  };
+
+  public type NewActor = {
     pickupLines : Map.Map<Nat, NewPickupLine>;
     nextId : Nat;
   };
@@ -34,9 +35,9 @@ module {
   public func run(old : OldActor) : NewActor {
     let newPickupLines = old.pickupLines.map<Nat, OldPickupLine, NewPickupLine>(
       func(_id, oldLine) {
-        { oldLine with status = #approved };
-      },
+        { oldLine with likeCount = 0 };
+      }
     );
-    { old with pickupLines = newPickupLines };
+    { pickupLines = newPickupLines; nextId = old.nextId };
   };
 };

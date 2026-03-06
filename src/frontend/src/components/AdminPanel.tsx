@@ -48,43 +48,51 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
   const lines = pendingLines ?? [];
 
   return (
-    <div className="min-h-screen relative" data-ocid="admin.panel">
-      {/* Authoritative dark background overlay */}
-      <div className="fixed inset-0 bg-gradient-to-br from-secondary/40 via-primary/10 to-background pointer-events-none" />
+    <div
+      className="min-h-[calc(100vh-64px)] relative bg-background"
+      data-ocid="admin.panel"
+    >
+      {/* Subtle top glow */}
+      <div
+        className="pointer-events-none absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] opacity-20"
+        style={{
+          background:
+            "radial-gradient(ellipse at 50% 0%, oklch(0.55 0.22 25 / 0.4) 0%, transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
 
-      <div className="relative z-10 container mx-auto px-4 py-8 max-w-3xl">
-        {/* Header row */}
-        <div className="flex items-center gap-4 mb-8">
+      <div className="relative z-10 container mx-auto px-4 py-12 max-w-2xl">
+        {/* Header */}
+        <div className="flex items-center gap-4 mb-10">
           <Button
             variant="outline"
             onClick={onBack}
-            className="gap-2 border-border hover:bg-muted shrink-0"
+            className="gap-2 border-border/60 text-foreground hover:bg-muted hover:border-border shrink-0 text-sm"
             data-ocid="admin.secondary_button"
           >
             <ArrowLeft className="h-4 w-4" />
-            Back to Feed
+            Back
           </Button>
 
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/15 border border-primary/30 shrink-0">
-                <ShieldCheck className="h-5 w-5 text-primary" />
-              </div>
-              <div>
-                <h1 className="text-xl font-bold text-foreground leading-tight">
-                  Admin Panel
-                </h1>
-                <p className="text-xs text-muted-foreground">
-                  {isLoading
-                    ? "Loading..."
-                    : `${lines.length} line${lines.length !== 1 ? "s" : ""} awaiting review`}
-                </p>
-              </div>
+          <div className="flex-1 min-w-0 flex items-center gap-3">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-primary/10 border border-primary/25 shrink-0">
+              <ShieldCheck className="h-4 w-4 text-primary" />
+            </div>
+            <div>
+              <h1 className="font-display text-xl font-bold text-foreground leading-tight">
+                Admin Panel
+              </h1>
+              <p className="text-xs text-muted-foreground">
+                {isLoading
+                  ? "Loading submissions..."
+                  : `${lines.length} line${lines.length !== 1 ? "s" : ""} awaiting review`}
+              </p>
             </div>
           </div>
 
           {!isLoading && lines.length > 0 && (
-            <div className="flex h-7 min-w-7 items-center justify-center rounded-full bg-destructive text-destructive-foreground text-xs font-bold px-2 shrink-0">
+            <div className="flex h-7 min-w-7 items-center justify-center rounded-full bg-primary text-primary-foreground text-xs font-bold px-2.5 shrink-0 animate-pulse-glow">
               {lines.length}
             </div>
           )}
@@ -92,19 +100,19 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
 
         {/* Loading state */}
         {isLoading && (
-          <div className="space-y-4" data-ocid="admin.loading_state">
+          <div className="space-y-3" data-ocid="admin.loading_state">
             {[1, 2, 3].map((i) => (
-              <Card key={i} className="border border-border/60 bg-card/80">
+              <Card key={i} className="border border-border/50 bg-card">
                 <CardContent className="p-5">
                   <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1 space-y-2">
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-4 w-1/2" />
-                      <Skeleton className="h-4 w-2/3" />
+                    <div className="flex-1 space-y-2.5">
+                      <Skeleton className="h-3.5 w-3/4 animate-shimmer" />
+                      <Skeleton className="h-3.5 w-1/2 animate-shimmer" />
+                      <Skeleton className="h-3.5 w-2/3 animate-shimmer" />
                     </div>
                     <div className="flex gap-2 shrink-0">
-                      <Skeleton className="h-9 w-24" />
-                      <Skeleton className="h-9 w-20" />
+                      <Skeleton className="h-8 w-24 animate-shimmer" />
+                      <Skeleton className="h-8 w-20 animate-shimmer" />
                     </div>
                   </div>
                 </CardContent>
@@ -119,18 +127,18 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.4 }}
-            className="flex flex-col items-center justify-center py-20 text-center"
+            className="flex flex-col items-center justify-center py-24 text-center"
             data-ocid="admin.empty_state"
           >
-            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 border border-primary/20">
-              <Sparkles className="h-8 w-8 text-primary" />
+            <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 border border-primary/20">
+              <Sparkles className="h-7 w-7 text-primary" />
             </div>
-            <h3 className="text-lg font-semibold text-foreground mb-1">
+            <h3 className="font-display text-lg font-bold text-foreground mb-2">
               All caught up!
             </h3>
-            <p className="text-muted-foreground text-sm max-w-xs">
-              No pending lines — all caught up! Check back later for new
-              submissions.
+            <p className="text-sm text-muted-foreground max-w-xs">
+              No pending submissions right now. Check back later for new
+              community lines.
             </p>
           </motion.div>
         )}
@@ -159,18 +167,20 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
                     transition={{ duration: 0.28, delay: index * 0.04 }}
                     data-ocid={`admin.item.${ocidIndex}`}
                   >
-                    <Card className="border border-border/70 bg-card/90 hover:border-primary/30 transition-colors shadow-sm">
+                    <Card className="border border-border/50 bg-card hover:border-primary/25 transition-colors relative overflow-hidden">
+                      {/* Left accent on hover */}
+                      <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary/0 hover:bg-primary/50 transition-colors" />
                       <CardContent className="p-5">
                         <div className="flex flex-col sm:flex-row sm:items-start gap-4">
                           {/* Line text */}
                           <div className="flex-1 min-w-0">
-                            <div className="flex items-center gap-2 mb-2">
-                              <Clock className="h-3.5 w-3.5 text-muted-foreground shrink-0" />
-                              <span className="text-xs text-muted-foreground font-medium uppercase tracking-wide">
+                            <div className="flex items-center gap-2 mb-2.5">
+                              <Clock className="h-3 w-3 text-muted-foreground shrink-0" />
+                              <span className="text-[10px] text-muted-foreground font-semibold uppercase tracking-widest">
                                 Pending Review
                               </span>
                             </div>
-                            <p className="text-foreground text-sm leading-relaxed whitespace-pre-line font-medium">
+                            <p className="text-sm text-foreground leading-relaxed whitespace-pre-line font-medium">
                               {line.text}
                             </p>
                             {line.instagramUrl && (
@@ -189,33 +199,32 @@ export function AdminPanel({ onBack }: AdminPanelProps) {
                           </div>
 
                           {/* Action buttons */}
-                          <div className="flex gap-2 shrink-0 sm:flex-col lg:flex-row">
+                          <div className="flex gap-2 shrink-0">
                             <Button
                               size="sm"
                               onClick={() => handleApprove(line.id)}
                               disabled={isBusy}
-                              className="flex-1 sm:flex-none gap-1.5 bg-green-600 hover:bg-green-700 text-white border-0"
-                              data-ocid={`admin.approve_button.${ocidIndex}`}
+                              className="gap-1.5 bg-emerald-600/90 hover:bg-emerald-600 text-white border-0 text-xs h-8 font-medium transition-all"
+                              data-ocid={`admin.confirm_button.${ocidIndex}`}
                             >
                               {isApproving ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                <Loader2 className="h-3 w-3 animate-spin" />
                               ) : (
-                                <CheckCircle className="h-3.5 w-3.5" />
+                                <CheckCircle className="h-3 w-3" />
                               )}
                               {isApproving ? "Approving…" : "Approve"}
                             </Button>
                             <Button
                               size="sm"
-                              variant="destructive"
                               onClick={() => handleReject(line.id)}
                               disabled={isBusy}
-                              className="flex-1 sm:flex-none gap-1.5"
+                              className="gap-1.5 bg-destructive/90 hover:bg-destructive text-destructive-foreground text-xs h-8 font-medium transition-all"
                               data-ocid={`admin.delete_button.${ocidIndex}`}
                             >
                               {isRejecting ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                <Loader2 className="h-3 w-3 animate-spin" />
                               ) : (
-                                <XCircle className="h-3.5 w-3.5" />
+                                <XCircle className="h-3 w-3" />
                               )}
                               {isRejecting ? "Rejecting…" : "Reject"}
                             </Button>

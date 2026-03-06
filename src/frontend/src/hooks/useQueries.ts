@@ -21,6 +21,25 @@ export function usePickupLines() {
   });
 }
 
+export function useApprovedPickupLines() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<PickupLine[]>({
+    queryKey: ["approvedPickupLines"],
+    queryFn: async () => {
+      if (!actor) throw new Error("Actor not initialized");
+      return actor.getApprovedPickupLines();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: true,
+    staleTime: 0,
+    placeholderData: (previousData) => previousData,
+    retry: 3,
+    retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 10000),
+  });
+}
+
 export function useLineWithGuide(id: bigint | null) {
   const { actor, isFetching } = useActor();
 
@@ -100,6 +119,7 @@ export function useApprovePickupLine() {
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["pickupLines"] });
       queryClient.refetchQueries({ queryKey: ["pendingPickupLines"] });
+      queryClient.refetchQueries({ queryKey: ["approvedPickupLines"] });
     },
   });
 }
@@ -116,6 +136,22 @@ export function useRejectPickupLine() {
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["pickupLines"] });
       queryClient.refetchQueries({ queryKey: ["pendingPickupLines"] });
+      queryClient.refetchQueries({ queryKey: ["approvedPickupLines"] });
+    },
+  });
+}
+
+export function useLikePickupLine() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: bigint) => {
+      if (!actor) throw new Error("Actor not initialized");
+      return actor.likePickupLine(id);
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ["approvedPickupLines"] });
     },
   });
 }

@@ -16,6 +16,7 @@ export const Status = IDL.Variant({
 export const PickupLine = IDL.Record({
   'id' : IDL.Nat,
   'status' : Status,
+  'likeCount' : IDL.Nat,
   'reportCount' : IDL.Nat,
   'isSystem' : IDL.Bool,
   'text' : IDL.Text,
@@ -25,12 +26,14 @@ export const PickupLine = IDL.Record({
 export const idlService = IDL.Service({
   'approvePickupLine' : IDL.Func([IDL.Nat], [], []),
   'getAllPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+  'getApprovedPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
   'getLineWithGuide' : IDL.Func(
       [IDL.Nat],
       [IDL.Record({ 'howToUse' : IDL.Text, 'pickupLine' : PickupLine })],
       ['query'],
     ),
   'getPendingPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+  'likePickupLine' : IDL.Func([IDL.Nat], [], []),
   'rejectPickupLine' : IDL.Func([IDL.Nat], [], []),
   'reportPickupLine' : IDL.Func([IDL.Nat], [], []),
   'submitPickupLine' : IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
@@ -47,6 +50,7 @@ export const idlFactory = ({ IDL }) => {
   const PickupLine = IDL.Record({
     'id' : IDL.Nat,
     'status' : Status,
+    'likeCount' : IDL.Nat,
     'reportCount' : IDL.Nat,
     'isSystem' : IDL.Bool,
     'text' : IDL.Text,
@@ -56,12 +60,14 @@ export const idlFactory = ({ IDL }) => {
   return IDL.Service({
     'approvePickupLine' : IDL.Func([IDL.Nat], [], []),
     'getAllPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+    'getApprovedPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
     'getLineWithGuide' : IDL.Func(
         [IDL.Nat],
         [IDL.Record({ 'howToUse' : IDL.Text, 'pickupLine' : PickupLine })],
         ['query'],
       ),
     'getPendingPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+    'likePickupLine' : IDL.Func([IDL.Nat], [], []),
     'rejectPickupLine' : IDL.Func([IDL.Nat], [], []),
     'reportPickupLine' : IDL.Func([IDL.Nat], [], []),
     'submitPickupLine' : IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),

@@ -17,6 +17,7 @@ actor {
     text : Text;
     instagramUrl : ?Text;
     reportCount : Nat;
+    likeCount : Nat;
     isSystem : Bool;
     status : Status;
   };
@@ -40,6 +41,7 @@ actor {
       text = cleanedText;
       instagramUrl;
       reportCount = 0;
+      likeCount = 0;
       isSystem = false;
       status = #pending;
     };
@@ -56,6 +58,16 @@ actor {
     pickupLines.toArray().filter(
       func((_, line)) {
         line.status == #pending;
+      }
+    ).map(
+      func((_, line)) { line }
+    );
+  };
+
+  public query ({ caller }) func getApprovedPickupLines() : async [PickupLine] {
+    pickupLines.toArray().filter(
+      func((_, line)) {
+        line.status == #approved;
       }
     ).map(
       func((_, line)) { line }
@@ -91,6 +103,16 @@ actor {
       case (null) { Runtime.trap("Pickup line does not exist") };
       case (?pickupLine) {
         let updatedPickupLine = { pickupLine with reportCount = pickupLine.reportCount + 1 };
+        pickupLines.add(id, updatedPickupLine);
+      };
+    };
+  };
+
+  public shared ({ caller }) func likePickupLine(id : Nat) : async () {
+    switch (pickupLines.get(id)) {
+      case (null) { Runtime.trap("Pickup line does not exist") };
+      case (?pickupLine) {
+        let updatedPickupLine = { pickupLine with likeCount = pickupLine.likeCount + 1 };
         pickupLines.add(id, updatedPickupLine);
       };
     };

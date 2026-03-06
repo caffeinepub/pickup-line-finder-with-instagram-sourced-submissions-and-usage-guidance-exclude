@@ -13,6 +13,7 @@ import type { Principal } from '@icp-sdk/core/principal';
 export interface PickupLine {
   'id' : bigint,
   'status' : Status,
+  'likeCount' : bigint,
   'reportCount' : bigint,
   'isSystem' : boolean,
   'text' : string,
@@ -24,11 +25,13 @@ export type Status = { 'pending' : null } |
 export interface _SERVICE {
   'approvePickupLine' : ActorMethod<[bigint], undefined>,
   'getAllPickupLines' : ActorMethod<[], Array<PickupLine>>,
+  'getApprovedPickupLines' : ActorMethod<[], Array<PickupLine>>,
   'getLineWithGuide' : ActorMethod<
     [bigint],
     { 'howToUse' : string, 'pickupLine' : PickupLine }
   >,
   'getPendingPickupLines' : ActorMethod<[], Array<PickupLine>>,
+  'likePickupLine' : ActorMethod<[bigint], undefined>,
   'rejectPickupLine' : ActorMethod<[bigint], undefined>,
   'reportPickupLine' : ActorMethod<[bigint], undefined>,
   'submitPickupLine' : ActorMethod<[string, [] | [string]], undefined>,

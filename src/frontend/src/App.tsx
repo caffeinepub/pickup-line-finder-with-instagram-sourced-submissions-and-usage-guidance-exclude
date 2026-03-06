@@ -5,7 +5,7 @@ import { AppLayout } from "./components/AppLayout";
 import { PickupLineDetail } from "./components/PickupLineDetail";
 import { PickupLineFeed } from "./components/PickupLineFeed";
 import { SubmitPickupLineForm } from "./components/SubmitPickupLineForm";
-import { usePickupLines } from "./hooks/useQueries";
+import { useApprovedPickupLines } from "./hooks/useQueries";
 
 type View = "feed" | "submit" | "admin";
 
@@ -22,7 +22,7 @@ function AppContent() {
     error,
     refetch,
     isRefetching,
-  } = usePickupLines();
+  } = useApprovedPickupLines();
 
   // Only show loading on initial load, not on background refetches
   const isInitialLoading = isLoading && !pickupLines;

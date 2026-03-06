@@ -10,6 +10,7 @@ export type Option<T> = Some<T> | None;
 export interface PickupLine {
     id: bigint;
     status: Status;
+    likeCount: bigint;
     reportCount: bigint;
     isSystem: boolean;
     text: string;
@@ -23,11 +24,13 @@ export enum Status {
 export interface backendInterface {
     approvePickupLine(id: bigint): Promise<void>;
     getAllPickupLines(): Promise<Array<PickupLine>>;
+    getApprovedPickupLines(): Promise<Array<PickupLine>>;
     getLineWithGuide(id: bigint): Promise<{
         howToUse: string;
         pickupLine: PickupLine;
     }>;
     getPendingPickupLines(): Promise<Array<PickupLine>>;
+    likePickupLine(id: bigint): Promise<void>;
     rejectPickupLine(id: bigint): Promise<void>;
     reportPickupLine(id: bigint): Promise<void>;
     submitPickupLine(text: string, instagramUrl: string | null): Promise<void>;

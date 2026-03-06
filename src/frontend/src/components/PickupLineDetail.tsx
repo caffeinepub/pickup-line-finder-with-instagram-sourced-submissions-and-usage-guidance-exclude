@@ -59,121 +59,152 @@ export function PickupLineDetail({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto border-2 border-primary/30 shadow-large">
+      <DialogContent
+        className="max-w-2xl max-h-[88vh] overflow-y-auto bg-popover border border-border/60 shadow-large p-0"
+        data-ocid="feed.dialog"
+      >
+        {/* Custom close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          className="absolute right-4 top-4 z-10 rounded-lg w-8 h-8 flex items-center justify-center bg-muted/60 hover:bg-muted text-muted-foreground hover:text-foreground transition-all"
+          aria-label="Close"
+          data-ocid="feed.close_button"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
         {isLoading || !pickupLine ? (
-          <div className="flex items-center justify-center py-12">
-            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <div className="flex items-center justify-center py-20">
+            <div className="flex flex-col items-center gap-3">
+              <div className="w-10 h-10 rounded-full border-2 border-primary/30 border-t-primary animate-spin" />
+              <p className="text-xs text-muted-foreground">Loading line...</p>
+            </div>
           </div>
         ) : (
-          <>
-            <DialogHeader>
-              <div className="flex items-start justify-between gap-4">
-                <div className="flex-1 space-y-2">
-                  <DialogTitle className="text-2xl leading-tight pr-8">
+          <div className="p-6 space-y-0">
+            {/* Header */}
+            <DialogHeader className="mb-5">
+              <div className="flex items-start gap-3 pr-10">
+                <div className="w-9 h-9 rounded-lg bg-primary/10 border border-primary/25 flex items-center justify-center shrink-0 mt-0.5">
+                  <MessageCircleHeart className="h-4 w-4 text-primary" />
+                </div>
+                <div>
+                  <DialogTitle className="text-lg font-display font-bold leading-snug text-foreground">
                     {pickupLine.text.split("\n")[0]}
                   </DialogTitle>
-                  <DialogDescription className="text-base">
-                    Multi-line pickup line with usage guide
+                  <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                    Multi-line pickup line · Usage guide included
                   </DialogDescription>
                 </div>
               </div>
             </DialogHeader>
 
-            <div className="space-y-6 pt-4">
-              {/* Main pickup line with theme token gradient background */}
-              <div className="relative bg-gradient-to-br from-primary/20 via-secondary/30 to-accent/20 rounded-2xl p-6 border-2 border-primary/30 shadow-medium overflow-hidden">
-                <div className="relative z-10">
-                  <div className="flex items-center justify-between mb-4">
-                    <div className="flex items-center gap-2">
-                      <MessageCircleHeart className="h-5 w-5 text-primary" />
-                      <h3 className="font-semibold text-lg">The Line</h3>
-                    </div>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={handleCopy}
-                      className="gap-2 hover:bg-white/50"
-                    >
-                      {copied ? (
-                        <>
-                          <Check className="h-4 w-4" />
-                          Copied!
-                        </>
-                      ) : (
-                        <>
-                          <Copy className="h-4 w-4" />
-                          Copy
-                        </>
-                      )}
-                    </Button>
-                  </div>
-                  <p className="text-base leading-relaxed whitespace-pre-wrap font-medium">
-                    {pickupLine.text}
-                  </p>
-                </div>
+            {/* The Line card */}
+            <div className="rounded-xl border border-border/50 bg-card overflow-hidden mb-5">
+              {/* Card header */}
+              <div className="flex items-center justify-between px-5 py-3 border-b border-border/40">
+                <span className="text-xs font-semibold text-foreground/70 uppercase tracking-wider">
+                  The Line
+                </span>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={handleCopy}
+                  className={`gap-2 text-xs h-7 px-3 transition-all ${
+                    copied
+                      ? "text-primary bg-primary/5"
+                      : "text-muted-foreground hover:text-primary hover:bg-primary/5"
+                  }`}
+                  data-ocid="feed.card.copy_button.1"
+                >
+                  {copied ? (
+                    <>
+                      <Check className="h-3.5 w-3.5" />
+                      Copied!
+                    </>
+                  ) : (
+                    <>
+                      <Copy className="h-3.5 w-3.5" />
+                      Copy
+                    </>
+                  )}
+                </Button>
               </div>
 
-              <Separator className="bg-primary/20" />
+              {/* Line text with red left border */}
+              <div className="relative px-5 py-4">
+                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-primary/60 rounded" />
+                <p className="text-sm leading-[1.8] whitespace-pre-wrap font-medium text-foreground">
+                  {pickupLine.text}
+                </p>
+              </div>
+            </div>
 
-              {/* Usage guide with theme token gradient highlights */}
-              <div className="space-y-4">
-                <div className="flex items-center gap-2">
-                  <Lightbulb className="h-5 w-5 text-accent" />
-                  <h3 className="font-semibold text-lg">How to Use</h3>
+            {/* How to Use */}
+            {howToUse && (
+              <div className="rounded-xl border border-border/50 bg-card overflow-hidden mb-5">
+                <div className="flex items-center gap-2 px-5 py-3 border-b border-border/40">
+                  <Lightbulb className="h-3.5 w-3.5 text-primary/70" />
+                  <span className="text-xs font-semibold text-foreground/70 uppercase tracking-wider">
+                    How to Use
+                  </span>
                 </div>
-                <div className="bg-gradient-to-br from-accent/10 to-secondary/10 rounded-xl p-5 border-2 border-accent/20">
-                  <p className="text-sm leading-relaxed whitespace-pre-wrap">
+                <div className="px-5 py-4">
+                  <p className="text-sm leading-relaxed text-muted-foreground whitespace-pre-wrap">
                     {howToUse}
                   </p>
                 </div>
               </div>
+            )}
 
-              {/* Instagram link if available */}
-              {pickupLine.instagramUrl && (
-                <>
-                  <Separator className="bg-primary/20" />
-                  <div className="flex items-center gap-3">
-                    <Instagram className="h-5 w-5 text-primary" />
-                    <a
-                      href={pickupLine.instagramUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="text-sm text-primary hover:text-primary/80 underline underline-offset-4 transition-colors font-medium"
-                    >
-                      View on Instagram
-                    </a>
-                  </div>
-                </>
-              )}
-
-              <Separator className="bg-primary/20" />
-
-              {/* Footer actions */}
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-3">
-                  {Number(pickupLine.reportCount) > 0 && (
-                    <Badge
-                      variant="outline"
-                      className="border-destructive/30 text-destructive"
-                    >
-                      {Number(pickupLine.reportCount)} report
-                      {Number(pickupLine.reportCount) !== 1 ? "s" : ""}
-                    </Badge>
-                  )}
-                </div>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={handleReport}
-                  disabled={reportMutation.isPending}
-                  className="gap-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+            {/* Instagram link */}
+            {pickupLine.instagramUrl && (
+              <div className="flex items-center gap-3 px-1 mb-5">
+                <Instagram className="h-4 w-4 text-muted-foreground shrink-0" />
+                <a
+                  href={pickupLine.instagramUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-primary hover:text-primary/80 underline underline-offset-3 transition-colors truncate"
                 >
-                  <Flag className="h-4 w-4" />
-                  Report
-                </Button>
+                  View original on Instagram
+                </a>
               </div>
+            )}
+
+            <Separator className="bg-border/40 mb-4" />
+
+            {/* Footer actions */}
+            <div className="flex items-center justify-between px-1">
+              <div className="flex items-center gap-2">
+                {Number(pickupLine.reportCount) > 0 && (
+                  <Badge
+                    variant="outline"
+                    className="border-destructive/30 text-destructive text-xs"
+                  >
+                    {Number(pickupLine.reportCount)} report
+                    {Number(pickupLine.reportCount) !== 1 ? "s" : ""}
+                  </Badge>
+                )}
+              </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleReport}
+                disabled={reportMutation.isPending}
+                className="gap-2 text-xs text-muted-foreground/60 hover:text-destructive hover:bg-destructive/5 transition-all h-7 px-3"
+                data-ocid="feed.delete_button"
+              >
+                {reportMutation.isPending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <Flag className="h-3.5 w-3.5" />
+                )}
+                Report
+              </Button>
             </div>
-          </>
+          </div>
         )}
       </DialogContent>
     </Dialog>
