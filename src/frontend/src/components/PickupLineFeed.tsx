@@ -1,16 +1,25 @@
-import { Search, MessageCircleHeart, AlertCircle, Sparkles } from 'lucide-react';
-import { Input } from './ui/input';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Badge } from './ui/badge';
-import { Button } from './ui/button';
-import { Alert, AlertDescription } from './ui/alert';
-import { Skeleton } from './ui/skeleton';
-import { useReportPickupLine } from '../hooks/useQueries';
-import type { PickupLine } from '../backend';
+import {
+  AlertCircle,
+  MessageCircleHeart,
+  RefreshCw,
+  Search,
+  Sparkles,
+} from "lucide-react";
+import type { PickupLine } from "../backend";
+import { useReportPickupLine } from "../hooks/useQueries";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Badge } from "./ui/badge";
+import { Button } from "./ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { Input } from "./ui/input";
+import { Skeleton } from "./ui/skeleton";
 
 interface PickupLineFeedProps {
   pickupLines: PickupLine[];
   isLoading: boolean;
+  isRefreshing?: boolean;
+  error: Error | null;
+  onRetry: () => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   onSelectPickupLine: (pickupLine: PickupLine) => void;
@@ -21,6 +30,9 @@ const REPORT_THRESHOLD = 5;
 export function PickupLineFeed({
   pickupLines,
   isLoading,
+  isRefreshing,
+  error,
+  onRetry,
   searchQuery,
   onSearchChange,
   onSelectPickupLine,
@@ -28,12 +40,12 @@ export function PickupLineFeed({
   const reportMutation = useReportPickupLine();
 
   const visiblePickupLines = pickupLines.filter(
-    (line) => Number(line.reportCount) < REPORT_THRESHOLD
+    (line) => Number(line.reportCount) < REPORT_THRESHOLD,
   );
 
-  const handleReport = (e: React.MouseEvent, id: bigint) => {
+  const _handleReport = (e: React.MouseEvent, id: bigint) => {
     e.stopPropagation();
-    if (confirm('Report this pickup line as inappropriate?')) {
+    if (confirm("Report this pickup line as inappropriate?")) {
       reportMutation.mutate(id);
     }
   };
@@ -43,14 +55,17 @@ export function PickupLineFeed({
       {/* Hero section with theme token gradient */}
       <div className="relative bg-gradient-to-br from-primary/30 via-secondary/40 to-accent/30 rounded-3xl p-8 md:p-12 overflow-hidden border-2 border-primary/30 shadow-large">
         {/* Hero illustration with smooth rendering */}
-        <div className="absolute right-0 top-0 bottom-0 w-1/2 opacity-30 pointer-events-none hidden lg:block" aria-hidden="true">
+        <div
+          className="absolute right-0 top-0 bottom-0 w-1/2 opacity-30 pointer-events-none hidden lg:block"
+          aria-hidden="true"
+        >
           <img
             src="/assets/generated/hero-illustration.dim_1600x900.png"
             alt=""
             className="h-full w-full object-cover object-left smooth-render"
           />
         </div>
-        
+
         <div className="relative z-10 max-w-2xl">
           <div className="flex items-center gap-3 mb-4">
             <MessageCircleHeart className="h-10 w-10 text-white drop-shadow-md" />
@@ -59,10 +74,11 @@ export function PickupLineFeed({
             </h1>
           </div>
           <p className="text-lg text-white/95 mb-6 leading-relaxed drop-shadow">
-            Browse our collection of creative multi-line pickup lines from Instagram. 
-            Find the perfect conversation starter and learn how to use it effectively.
+            Browse our collection of creative multi-line pickup lines from
+            Instagram. Find the perfect conversation starter and learn how to
+            use it effectively.
           </p>
-          
+
           {/* Search bar with vibrant styling */}
           <div className="relative max-w-xl">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -77,7 +93,37 @@ export function PickupLineFeed({
         </div>
       </div>
 
-      {/* Loading state with designed skeletons */}
+      {/* Error state with retry option */}
+      {error && (
+        <Alert variant="destructive" className="border-2">
+          <AlertCircle className="h-5 w-5" />
+          <AlertDescription className="flex items-center justify-between">
+            <span className="text-sm font-medium">
+              Failed to load pickup lines.{" "}
+              {error.message || "Please try again."}
+            </span>
+            <Button
+              onClick={onRetry}
+              variant="outline"
+              size="sm"
+              className="ml-4 gap-2 border-destructive/30 hover:bg-destructive/10"
+            >
+              <RefreshCw className="h-4 w-4" />
+              Retry
+            </Button>
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {/* Background refresh indicator */}
+      {isRefreshing && !isLoading && (
+        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+          <RefreshCw className="h-4 w-4 animate-spin" />
+          <span>Checking for new pickup lines...</span>
+        </div>
+      )}
+
+      {/* Loading state with designed skeletons - only on initial load */}
       {isLoading ? (
         <div className="space-y-6">
           <div className="flex items-center gap-3 mb-4">
@@ -86,7 +132,10 @@ export function PickupLineFeed({
           </div>
           <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
             {[1, 2, 3, 4, 5, 6].map((i) => (
-              <Card key={i} className="overflow-hidden border-2 border-primary/20 shadow-soft">
+              <Card
+                key={i}
+                className="overflow-hidden border-2 border-primary/20 shadow-soft"
+              >
                 <CardHeader className="space-y-3 pb-4">
                   <Skeleton className="h-6 w-3/4" />
                   <Skeleton className="h-4 w-1/2" />
@@ -100,7 +149,7 @@ export function PickupLineFeed({
             ))}
           </div>
         </div>
-      ) : visiblePickupLines.length === 0 ? (
+      ) : visiblePickupLines.length === 0 && !error ? (
         <div className="text-center py-16">
           <div className="max-w-md mx-auto space-y-6">
             <div className="relative w-48 h-48 mx-auto opacity-60">
@@ -111,16 +160,18 @@ export function PickupLineFeed({
               />
             </div>
             <div className="space-y-3">
-              <h2 className="text-2xl font-bold text-foreground">No pickup lines found</h2>
+              <h2 className="text-2xl font-bold text-foreground">
+                No pickup lines found
+              </h2>
               <p className="text-muted-foreground leading-relaxed">
                 {searchQuery
-                  ? 'Try adjusting your search terms or browse all pickup lines.'
-                  : 'Be the first to submit a pickup line!'}
+                  ? "Try adjusting your search terms or browse all pickup lines."
+                  : "Be the first to submit a pickup line!"}
               </p>
             </div>
             {searchQuery && (
               <Button
-                onClick={() => onSearchChange('')}
+                onClick={() => onSearchChange("")}
                 variant="outline"
                 className="gap-2 border-2 border-primary/30"
               >
@@ -134,10 +185,14 @@ export function PickupLineFeed({
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-bold flex items-center gap-2">
               <Sparkles className="h-6 w-6 text-primary" />
-              {searchQuery ? 'Search Results' : 'All Pickup Lines'}
+              {searchQuery ? "Search Results" : "All Pickup Lines"}
             </h2>
-            <Badge variant="secondary" className="text-sm px-3 py-1 bg-primary/10 text-primary border-primary/30">
-              {visiblePickupLines.length} line{visiblePickupLines.length !== 1 ? 's' : ''}
+            <Badge
+              variant="secondary"
+              className="text-sm px-3 py-1 bg-primary/10 text-primary border-primary/30"
+            >
+              {visiblePickupLines.length} line
+              {visiblePickupLines.length !== 1 ? "s" : ""}
             </Badge>
           </div>
 
@@ -150,7 +205,7 @@ export function PickupLineFeed({
               >
                 <CardHeader className="relative z-10">
                   <CardTitle className="text-lg line-clamp-2 leading-snug">
-                    {pickupLine.text.split('\n')[0]}
+                    {pickupLine.text.split("\n")[0]}
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="relative z-10">
@@ -167,8 +222,12 @@ export function PickupLineFeed({
                       View Details
                     </Button>
                     {Number(pickupLine.reportCount) > 0 && (
-                      <Badge variant="outline" className="text-xs border-destructive/30 text-destructive">
-                        {Number(pickupLine.reportCount)} report{Number(pickupLine.reportCount) !== 1 ? 's' : ''}
+                      <Badge
+                        variant="outline"
+                        className="text-xs border-destructive/30 text-destructive"
+                      >
+                        {Number(pickupLine.reportCount)} report
+                        {Number(pickupLine.reportCount) !== 1 ? "s" : ""}
                       </Badge>
                     )}
                   </div>

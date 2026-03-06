@@ -1,21 +1,27 @@
-import { useState } from 'react';
-import { Instagram, Sparkles, AlertCircle, Send } from 'lucide-react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from './ui/card';
-import { Input } from './ui/input';
-import { Textarea } from './ui/textarea';
-import { Button } from './ui/button';
-import { Label } from './ui/label';
-import { Alert, AlertDescription } from './ui/alert';
-import { useSubmitPickupLine } from '../hooks/useQueries';
-import { validatePickupLine } from '../lib/validation';
+import { AlertCircle, Instagram, Send, Sparkles } from "lucide-react";
+import { useState } from "react";
+import { useSubmitPickupLine } from "../hooks/useQueries";
+import { validatePickupLine } from "../lib/validation";
+import { Alert, AlertDescription } from "./ui/alert";
+import { Button } from "./ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card";
+import { Input } from "./ui/input";
+import { Label } from "./ui/label";
+import { Textarea } from "./ui/textarea";
 
 interface SubmitPickupLineFormProps {
   onSuccess: () => void;
 }
 
 export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
-  const [text, setText] = useState('');
-  const [instagramUrl, setInstagramUrl] = useState('');
+  const [text, setText] = useState("");
+  const [instagramUrl, setInstagramUrl] = useState("");
   const [validationError, setValidationError] = useState<string | null>(null);
   const submitMutation = useSubmitPickupLine();
 
@@ -25,7 +31,7 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
 
     const validation = validatePickupLine(text);
     if (!validation.isValid) {
-      setValidationError(validation.error || 'Invalid pickup line');
+      setValidationError(validation.error || "Invalid pickup line");
       return;
     }
 
@@ -34,11 +40,14 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
         text: text.trim(),
         instagramUrl: instagramUrl.trim() || null,
       });
-      setText('');
-      setInstagramUrl('');
+      setText("");
+      setInstagramUrl("");
+      // Call onSuccess which will navigate back to feed and trigger immediate refetch
       onSuccess();
     } catch (error) {
-      setValidationError(error instanceof Error ? error.message : 'Failed to submit pickup line');
+      setValidationError(
+        error instanceof Error ? error.message : "Failed to submit pickup line",
+      );
     }
   };
 
@@ -56,7 +65,8 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
             </h1>
           </div>
           <p className="text-lg text-white/95 leading-relaxed drop-shadow">
-            Submit your best multi-line pickup line and help others level up their conversation game.
+            Submit your best multi-line pickup line and help others level up
+            their conversation game.
           </p>
         </div>
       </div>
@@ -68,7 +78,8 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
             Submit Pickup Line
           </CardTitle>
           <CardDescription className="text-base leading-relaxed">
-            Share a creative multi-line pickup line. Make sure it's appropriate and follows our guidelines.
+            Share a creative multi-line pickup line. Make sure it's appropriate
+            and follows our guidelines.
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -95,7 +106,10 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
             </div>
 
             <div className="space-y-3">
-              <Label htmlFor="instagram" className="text-base font-semibold flex items-center gap-2">
+              <Label
+                htmlFor="instagram"
+                className="text-base font-semibold flex items-center gap-2"
+              >
                 <Instagram className="h-4 w-4" />
                 Instagram URL (Optional)
               </Label>
@@ -118,15 +132,6 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
                 <AlertCircle className="h-5 w-5" />
                 <AlertDescription className="text-sm font-medium">
                   {validationError}
-                </AlertDescription>
-              </Alert>
-            )}
-
-            {submitMutation.isSuccess && (
-              <Alert className="border-2 border-accent/30 bg-accent/10">
-                <Sparkles className="h-5 w-5 text-accent" />
-                <AlertDescription className="text-sm font-medium text-accent-foreground">
-                  Pickup line submitted successfully! 🎉
                 </AlertDescription>
               </Alert>
             )}
@@ -156,8 +161,9 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
       <Alert className="border-2 border-primary/20 bg-primary/5">
         <AlertCircle className="h-5 w-5 text-primary" />
         <AlertDescription className="text-sm leading-relaxed">
-          <strong className="font-semibold">Guidelines:</strong> Pickup lines must be multi-line (at least 3 lines), 
-          appropriate, and respectful. Inappropriate content will be removed.
+          <strong className="font-semibold">Guidelines:</strong> Pickup lines
+          must be multi-line (at least 3 lines), appropriate, and respectful.
+          Inappropriate content will be removed.
         </AlertDescription>
       </Alert>
     </div>

@@ -91,20 +91,46 @@ export class ExternalBlob {
 }
 export interface PickupLine {
     id: bigint;
+    status: Status;
     reportCount: bigint;
     isSystem: boolean;
     text: string;
     instagramUrl?: string;
-    howToUse: string;
+}
+export enum Status {
+    pending = "pending",
+    approved = "approved",
+    rejected = "rejected"
 }
 export interface backendInterface {
+    approvePickupLine(id: bigint): Promise<void>;
     getAllPickupLines(): Promise<Array<PickupLine>>;
+    getLineWithGuide(id: bigint): Promise<{
+        howToUse: string;
+        pickupLine: PickupLine;
+    }>;
+    getPendingPickupLines(): Promise<Array<PickupLine>>;
+    rejectPickupLine(id: bigint): Promise<void>;
     reportPickupLine(id: bigint): Promise<void>;
     submitPickupLine(text: string, instagramUrl: string | null): Promise<void>;
 }
-import type { PickupLine as _PickupLine } from "./declarations/backend.did.d.ts";
+import type { PickupLine as _PickupLine, Status as _Status } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
+    async approvePickupLine(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.approvePickupLine(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.approvePickupLine(arg0);
+            return result;
+        }
+    }
     async getAllPickupLines(): Promise<Array<PickupLine>> {
         if (this.processError) {
             try {
@@ -117,6 +143,51 @@ export class Backend implements backendInterface {
         } else {
             const result = await this.actor.getAllPickupLines();
             return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getLineWithGuide(arg0: bigint): Promise<{
+        howToUse: string;
+        pickupLine: PickupLine;
+    }> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getLineWithGuide(arg0);
+                return from_candid_record_n7(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getLineWithGuide(arg0);
+            return from_candid_record_n7(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getPendingPickupLines(): Promise<Array<PickupLine>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getPendingPickupLines();
+                return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getPendingPickupLines();
+            return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async rejectPickupLine(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.rejectPickupLine(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.rejectPickupLine(arg0);
+            return result;
         }
     }
     async reportPickupLine(arg0: bigint): Promise<void> {
@@ -136,14 +207,14 @@ export class Backend implements backendInterface {
     async submitPickupLine(arg0: string, arg1: string | null): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.submitPickupLine(arg0, to_candid_opt_n5(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.submitPickupLine(arg0, to_candid_opt_n8(this._uploadFile, this._downloadFile, arg1));
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.submitPickupLine(arg0, to_candid_opt_n5(this._uploadFile, this._downloadFile, arg1));
+            const result = await this.actor.submitPickupLine(arg0, to_candid_opt_n8(this._uploadFile, this._downloadFile, arg1));
             return result;
         }
     }
@@ -151,37 +222,61 @@ export class Backend implements backendInterface {
 function from_candid_PickupLine_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PickupLine): PickupLine {
     return from_candid_record_n3(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+function from_candid_Status_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Status): Status {
+    return from_candid_variant_n5(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
 function from_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     id: bigint;
+    status: _Status;
     reportCount: bigint;
     isSystem: boolean;
     text: string;
     instagramUrl: [] | [string];
-    howToUse: string;
 }): {
     id: bigint;
+    status: Status;
     reportCount: bigint;
     isSystem: boolean;
     text: string;
     instagramUrl?: string;
-    howToUse: string;
 } {
     return {
         id: value.id,
+        status: from_candid_Status_n4(_uploadFile, _downloadFile, value.status),
         reportCount: value.reportCount,
         isSystem: value.isSystem,
         text: value.text,
-        instagramUrl: record_opt_to_undefined(from_candid_opt_n4(_uploadFile, _downloadFile, value.instagramUrl)),
-        howToUse: value.howToUse
+        instagramUrl: record_opt_to_undefined(from_candid_opt_n6(_uploadFile, _downloadFile, value.instagramUrl))
     };
+}
+function from_candid_record_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    howToUse: string;
+    pickupLine: _PickupLine;
+}): {
+    howToUse: string;
+    pickupLine: PickupLine;
+} {
+    return {
+        howToUse: value.howToUse,
+        pickupLine: from_candid_PickupLine_n2(_uploadFile, _downloadFile, value.pickupLine)
+    };
+}
+function from_candid_variant_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    pending: null;
+} | {
+    approved: null;
+} | {
+    rejected: null;
+}): Status {
+    return "pending" in value ? Status.pending : "approved" in value ? Status.approved : "rejected" in value ? Status.rejected : value;
 }
 function from_candid_vec_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_PickupLine>): Array<PickupLine> {
     return value.map((x)=>from_candid_PickupLine_n2(_uploadFile, _downloadFile, x));
 }
-function to_candid_opt_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: string | null): [] | [string] {
+function to_candid_opt_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: string | null): [] | [string] {
     return value === null ? candid_none() : candid_some(value);
 }
 export interface CreateActorOptions {

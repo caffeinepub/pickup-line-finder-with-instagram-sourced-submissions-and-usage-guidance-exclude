@@ -8,17 +8,30 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const Status = IDL.Variant({
+  'pending' : IDL.Null,
+  'approved' : IDL.Null,
+  'rejected' : IDL.Null,
+});
 export const PickupLine = IDL.Record({
   'id' : IDL.Nat,
+  'status' : Status,
   'reportCount' : IDL.Nat,
   'isSystem' : IDL.Bool,
   'text' : IDL.Text,
   'instagramUrl' : IDL.Opt(IDL.Text),
-  'howToUse' : IDL.Text,
 });
 
 export const idlService = IDL.Service({
+  'approvePickupLine' : IDL.Func([IDL.Nat], [], []),
   'getAllPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+  'getLineWithGuide' : IDL.Func(
+      [IDL.Nat],
+      [IDL.Record({ 'howToUse' : IDL.Text, 'pickupLine' : PickupLine })],
+      ['query'],
+    ),
+  'getPendingPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+  'rejectPickupLine' : IDL.Func([IDL.Nat], [], []),
   'reportPickupLine' : IDL.Func([IDL.Nat], [], []),
   'submitPickupLine' : IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 });
@@ -26,17 +39,30 @@ export const idlService = IDL.Service({
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const Status = IDL.Variant({
+    'pending' : IDL.Null,
+    'approved' : IDL.Null,
+    'rejected' : IDL.Null,
+  });
   const PickupLine = IDL.Record({
     'id' : IDL.Nat,
+    'status' : Status,
     'reportCount' : IDL.Nat,
     'isSystem' : IDL.Bool,
     'text' : IDL.Text,
     'instagramUrl' : IDL.Opt(IDL.Text),
-    'howToUse' : IDL.Text,
   });
   
   return IDL.Service({
+    'approvePickupLine' : IDL.Func([IDL.Nat], [], []),
     'getAllPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+    'getLineWithGuide' : IDL.Func(
+        [IDL.Nat],
+        [IDL.Record({ 'howToUse' : IDL.Text, 'pickupLine' : PickupLine })],
+        ['query'],
+      ),
+    'getPendingPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+    'rejectPickupLine' : IDL.Func([IDL.Nat], [], []),
     'reportPickupLine' : IDL.Func([IDL.Nat], [], []),
     'submitPickupLine' : IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
   });

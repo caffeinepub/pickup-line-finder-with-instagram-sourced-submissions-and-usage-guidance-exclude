@@ -11,7 +11,7 @@ export function validatePickupLine(text: string): ValidationResult {
   if (trimmed.length === 0) {
     return {
       isValid: false,
-      error: 'Pickup line cannot be empty.',
+      error: "Pickup line cannot be empty.",
     };
   }
 
@@ -22,13 +22,14 @@ export function validatePickupLine(text: string): ValidationResult {
     };
   }
 
-  const lines = trimmed.split('\n');
+  const lines = trimmed.split("\n");
   const nonEmptyLines = lines.filter((line) => line.trim().length > 0);
 
   if (nonEmptyLines.length < 3) {
     return {
       isValid: false,
-      error: 'Pickup line must have at least 3 non-empty lines. One-liners are not allowed!',
+      error:
+        "Pickup line must have at least 3 non-empty lines. One-liners are not allowed!",
     };
   }
 
