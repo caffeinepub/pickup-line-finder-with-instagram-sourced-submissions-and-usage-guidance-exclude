@@ -1,0 +1,57 @@
+{
+  "kind": "coverage_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-12T16:59:16.718Z",
+  "sources": {
+    "buildRequest": true,
+    "implementationPlan": true
+  },
+  "requirements": {
+    "total": 4,
+    "implemented": 0,
+    "items": [
+      {
+        "id": "REQ-38",
+        "summary": "Update the backend `generateHowToUseGuide` so the returned `howToUse` text is actually derived from the pickup line content and does not return the same generic guide for every line.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-39",
+        "summary": "Implement real `detectLineType` logic in `backend/main.mo` so that it classifies pickup lines into at least several distinct categories (e.g., bold/clever/subtle/playful/cheesy/rhyming/classic) based on simple deterministic heuristics over the text (keywords, punctuation, rhyme-like endings, explicitness, etc.), and use the detected type to select different context/delivery/timing/follow-up guidance.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-40",
+        "summary": "Stop repeating the pickup line text inside the backend-generated `howToUse` guide text (the frontend already displays the pickup line under “The Line”). The `howToUse` string returned by `getLineWithGuide` must contain only guidance content (e.g., Context, How to Use, Timing, Follow-up), not the original pickup line text duplicated at the top.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      },
+      {
+        "id": "REQ-41",
+        "summary": "Ensure the generated guide never renders a blank/empty “Context:” section; if no specific context can be inferred, return a non-empty generic context sentence in English.",
+        "status": "unknown",
+        "plannedFiles": [],
+        "matchedFiles": []
+      }
+    ]
+  },
+  "changedFiles": [
+    "backend/main.mo",
+    "build-request.json",
+    "feature_evidence.json",
+    "frontend-implementation-plan.json",
+    "frontend/src/backend.d.ts",
+    "frontend/src/backend.ts",
+    "frontend/src/declarations/backend.did.d.ts",
+    "frontend/src/declarations/backend.did.js",
+    "project_state.json",
+    "scratch/component-selection.json",
+    "spec.md",
+    "spec_vs_diff_report.json"
+  ]
+}

@@ -1,0 +1,38 @@
+{
+  "kind": "spec_vs_diff_report",
+  "version": "1.0",
+  "generatedAt": "2026-02-12T16:59:16.715Z",
+  "summary": "Backend guide generation was updated to assemble a multi-section “How to Use” string using context, timing, and a detected line type, and it no longer appears to prepend/duplicate the pickup line text. However, due to truncation, the diff does not provide enough evidence to confirm that detectLineType is truly non-constant or that Context is guaranteed non-empty. An unrelated project_state.json summary change appears to add/claim Instagram fetching/renaming work not requested in this BuildRequest.",
+  "missing_requirements": [
+    {
+      "id": "REQ-39",
+      "requirement": "Implement real `detectLineType` logic in `backend/main.mo` so that it classifies pickup lines into at least several distinct categories based on deterministic heuristics, and use the detected type to select different guidance.",
+      "reason": "The diff shows `generateHowToUseGuide` calling `detectLineType(pickupLine)` and routing into `getLineTypeAdvice(lineType)`, but the actual implementation of `detectLineType` is not present in the provided truncated excerpt, so there is no evidence it no longer returns a constant value or that it uses the requested heuristics.",
+      "evidence": [
+        "backend/main.mo (truncated): `let lineType = detectLineType(pickupLine);` and `getLineTypeAdvice(lineType)` shown, but no `detectLineType` body visible"
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "requirement": "Ensure the generated guide never renders a blank/empty “Context:” section; if no specific context can be inferred, return a non-empty generic context sentence in English.",
+      "reason": "The diff shows a `Context:` section assembled from `getContextAdvice(pickupLine)`, but the implementation/guarantees of `getContextAdvice` are not visible in the truncated excerpt, so there is no evidence it cannot return empty/whitespace.",
+      "evidence": [
+        "backend/main.mo (truncated): `let context = getContextAdvice(pickupLine);` and `let contextFormatted = \"Context:\\n\" # context # sectionDivider;`"
+      ]
+    }
+  ],
+  "hallucinated_features": [
+    {
+      "description": "Project state summary updated to include renaming the product to RizzAssist and adding ability to fetch/add lines directly from Instagram.",
+      "reason": "These items are not part of the provided BuildRequest (which is limited to guide uniqueness, tone/type detection, and removing duplicated line text).",
+      "evidence": [
+        "project_state.json (truncated): summary mentions \"Rename product to RizzAssist\" and \"add the ability to fetch/add lines directly from Instagram\""
+      ]
+    }
+  ],
+  "confidence": 0.56,
+  "changed_files": [
+    "backend/main.mo",
+    "project_state.json"
+  ]
+}

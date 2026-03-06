@@ -1,0 +1,23 @@
+{
+  "backend/main.mo": "Motoko canister managing pickup lines with validation, storage, reporting, and generation of usage guides.",
+  "feature_evidence.json": "Empty feature evidence report structure.",
+  "frontend-file-summaries.txt": "Prewritten summaries describing purposes of all frontend files.",
+  "frontend/BUILDING.md": "Setup and build instructions for developing and deploying the frontend.",
+  "frontend/index.css": "Tailwind base file defining light/dark theme tokens and global styles.",
+  "frontend/index.html": "HTML entry point mounting the React app.",
+  "frontend/src/App.tsx": "Main React component managing views, search, random selection, and data fetching state.",
+  "frontend/src/components/AppHeader.tsx": "Sticky header with logo fallback and navigation buttons.",
+  "frontend/src/components/AppLayout.tsx": "App layout with themed background, header, main content, and footer.",
+  "frontend/src/components/PickupLineDetail.tsx": "Modal showing a pickup line with usage guide, copy feature, and reporting.",
+  "frontend/src/components/PickupLineFeed.tsx": "Displays a searchable feed of pickup lines with filtering, error handling, and reporting functionality.",
+  "frontend/src/components/StickerIcon.tsx": "Renders a 64x64 sprite-based sticker icon selected by index from a larger sprite sheet.",
+  "frontend/src/components/SubmitPickupLineForm.tsx": "Provides a form to submit multi-line pickup lines with validation, error display, and mutation handling.",
+  "frontend/src/hooks/useActor.ts": "Creates and manages a backend actor tied to the user’s identity, invalidating dependent queries on change.",
+  "frontend/src/hooks/useInternetIdentity.ts": "Implements an authentication context using Internet Identity, handling login, stored identities, and state management.",
+  "frontend/src/hooks/useQueries.ts": "Defines React Query hooks for fetching, submitting, and reporting pickup lines using the backend actor.",
+  "frontend/src/index.css": "Configures Tailwind and theme variables, defining colors, layout utilities, and rendering helpers.",
+  "frontend/src/lib/validation.ts": "Validates pickup line text for length and minimum line count, returning structured errors.",
+  "frontend/src/main.tsx": "Bootstraps the app with React Query and Internet Identity providers before rendering the root component.",
+  "frontend/tailwind.config.js": "Tailwind configuration enabling dark mode, custom fonts, color tokens, extended components, and plugins for typography, container queries, and animations.",
+  "project_state.json": "Project metadata describing product vision, architectural notes, known issues, and existing feature definitions for a pickup-line discovery web app."
+}

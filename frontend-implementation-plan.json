@@ -1,0 +1,6 @@
+{
+  "kind": "implementation_plan",
+  "version": "1.0",
+  "title": "Backend-only guide generation improvements (no frontend changes)",
+  "requirements": []
+}

@@ -1,0 +1,17 @@
+{
+  "frontend/src/App.tsx": "Main application component managing view state, search filtering, random pickup line selection, with proper error handling, retry capability, and immediate refetch trigger after successful submission while preserving cached data during transitions.",
+  "frontend/src/hooks/useQueries.ts": "React Query hooks with 5-second polling interval, background refetch enabled, placeholder data to prevent flicker, exponential backoff retry logic, and immediate refetch (not just invalidation) on successful mutations.",
+  "frontend/src/components/AppLayout.tsx": "Clean layout wrapper with theme-token-driven gradient background (primary/secondary/accent) and subtle pattern overlay, maintaining header/main/footer structure without decorative flourishes.",
+  "frontend/src/components/AppHeader.tsx": "Minimal sticky header with logo image that gracefully falls back to gradient \"RizzAssist\" text when the image fails to load, maintaining all navigation buttons (Browse/Random/Submit) unchanged.",
+  "frontend/src/components/PickupLineFeed.tsx": "Feed view with error state display and retry button, background refresh indicator, proper loading state handling (only on initial load), and preserved content during background refetches to prevent flickering.",
+  "frontend/src/components/SubmitPickupLineForm.tsx": "Submission form that navigates back to feed and triggers immediate refetch on success, ensuring newly submitted pickup lines appear quickly for the submitting user.",
+  "frontend/src/components/PickupLineDetail.tsx": "Modal dialog that fetches and displays a pickup line with its dynamically generated usage guide based on line characteristics, featuring theme-token gradient backgrounds, copy functionality, Instagram links, and report capability with loading states.",
+  "frontend/src/lib/validation.ts": "Client-side validation utilities enforcing multiline requirement (3+ non-empty lines), empty text rejection, and max length (500 chars).",
+  "frontend/src/index.css": "Global styles with OKLCH color system featuring exact deep burgundy secondary color (L 0.37, C 0.19, H 18 for light mode; L 0.43, C 0.18, H 18 for dark mode) matching the reference image, with vibrant coral primary, bright teal accent, and smooth image rendering utilities for both light and dark modes.",
+  "frontend/tailwind.config.js": "Extended Tailwind configuration with display font family, additional border radius utilities (xl/2xl/3xl), and enhanced box shadow scale (soft/medium/large) for premium visual depth.",
+  "frontend/index.html": "HTML entry point with RizzAssist branding in the document title.",
+  "frontend/src/components/StickerIcon.tsx": "Helper component for rendering sticker-style decorative accents with smooth anti-aliased rendering instead of pixelated crisp-edges setting.",
+  "frontend/public/assets/generated/rizzassist-logo.dim_512x256.png": "Improved RizzAssist logo featuring bold gradient typography, decorative heart icon, sparkle accents, and tagline with modern visual appeal at 512x256 dimensions.",
+  "frontend/BUILDING.md": "Comprehensive build, deployment, and troubleshooting documentation covering installation, asset verification, backend binding generation, local preview, deployment steps, and a production readiness checklist.",
+  "frontend/public/assets/generated/.gitkeep": "Placeholder file ensuring the generated assets directory exists in version control for proper build/deploy asset inclusion."
+}

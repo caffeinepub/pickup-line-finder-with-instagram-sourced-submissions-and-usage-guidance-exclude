@@ -1,0 +1,91 @@
+{
+  "kind": "build_request",
+  "title": "Make “How to Use” guidance unique per pickup line (remove repeated line text and implement tone detection)",
+  "priority": "high",
+  "requirements": [
+    {
+      "id": "REQ-38",
+      "text": "Update the backend `generateHowToUseGuide` so the returned `howToUse` text is actually derived from the pickup line content and does not return the same generic guide for every line.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "they all are still giving the same description"
+        ]
+      },
+      "acceptanceCriteria": [
+        "Calling `getLineWithGuide` for at least 3 noticeably different pickup lines returns guides that differ in their Context and/or Delivery/Timing/Follow-up content (not just the line count).",
+        "The backend no longer always classifies every pickup line as the same type when generating the guide."
+      ]
+    },
+    {
+      "id": "REQ-39",
+      "text": "Implement real `detectLineType` logic in `backend/main.mo` so that it classifies pickup lines into at least several distinct categories (e.g., bold/clever/subtle/playful/cheesy/rhyming/classic) based on simple deterministic heuristics over the text (keywords, punctuation, rhyme-like endings, explicitness, etc.), and use the detected type to select different context/delivery/timing/follow-up guidance.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "they all are still giving the same description"
+        ]
+      },
+      "acceptanceCriteria": [
+        "`detectLineType` no longer returns a constant value (it returns different categories for different inputs).",
+        "For each supported category, `generateHowToUseGuide` selects the matching category-specific guidance block (no falling back to the same default for all common cases).",
+        "Guide generation remains fully deterministic and uses no external AI/LLM services."
+      ]
+    },
+    {
+      "id": "REQ-40",
+      "text": "Stop repeating the pickup line text inside the backend-generated `howToUse` guide text (the frontend already displays the pickup line under “The Line”). The `howToUse` string returned by `getLineWithGuide` must contain only guidance content (e.g., Context, How to Use, Timing, Follow-up), not the original pickup line text duplicated at the top.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "How to Use\nDo you like water?\n\nyah...\n\nThen you already like 70 % of me \nSlide me your number and I'll show you what to like about the other 30 %"
+        ]
+      },
+      "acceptanceCriteria": [
+        "In the detail modal, the “How to Use” section no longer starts by repeating the pickup line text verbatim.",
+        "The “How to Use” section contains guidance text only and still includes clear English sections (Context, Timing, Follow-up, etc.)."
+      ]
+    },
+    {
+      "id": "REQ-41",
+      "text": "Ensure the generated guide never renders a blank/empty “Context:” section; if no specific context can be inferred, return a non-empty generic context sentence in English.",
+      "target": "backend",
+      "source": {
+        "messageIds": [
+          "msg-6"
+        ],
+        "quotes": [
+          "Context: "
+        ]
+      },
+      "acceptanceCriteria": [
+        "`howToUse` never contains a `Context:` label followed by nothing/only whitespace.",
+        "If no specific context is detected, a default context sentence is included in English."
+      ]
+    }
+  ],
+  "constraints": [
+    "Keep all Motoko logic in the single backend actor in `backend/main.mo` (no additional backend services).",
+    "Use English for all user-facing text.",
+    "Do not use external AI/LLM services for guide generation.",
+    "Do not edit frontend immutable paths listed in SYSTEM_CONTEXT."
+  ],
+  "nonGoals": [
+    "Changing the multi-line validation rules for pickup line submissions.",
+    "Adding new backend fields/schema changes for pickup lines (the fix should work by regenerating guides from existing stored text at read time).",
+    "Adding third-party integrations for content analysis."
+  ],
+  "imageRequirements": {
+    "required": [],
+    "edits": []
+  }
+}
