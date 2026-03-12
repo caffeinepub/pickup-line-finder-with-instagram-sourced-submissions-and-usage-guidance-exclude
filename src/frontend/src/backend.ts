@@ -89,14 +89,55 @@ export class ExternalBlob {
         return this;
     }
 }
+export interface LeaderboardEntry {
+    username: string;
+    totalUpvotes: bigint;
+}
+export interface Comment {
+    id: bigint;
+    username: string;
+    text: string;
+    submittedAt: bigint;
+    lineId: bigint;
+}
+export interface EmojiReactions {
+    heart: bigint;
+    fire: bigint;
+    laugh: bigint;
+    skull: bigint;
+}
 export interface PickupLine {
     id: bigint;
     status: Status;
     likeCount: bigint;
     reportCount: bigint;
+    username?: string;
     isSystem: boolean;
     text: string;
+    submittedAt: bigint;
+    downvoteCount: bigint;
     instagramUrl?: string;
+    category: Category;
+    emojiReactions: EmojiReactions;
+    copyCount: bigint;
+}
+export enum Category {
+    Romantic = "Romantic",
+    Nerdy = "Nerdy",
+    Smooth = "Smooth",
+    Uncategorized = "Uncategorized",
+    Opener = "Opener",
+    Savage = "Savage",
+    Funny = "Funny",
+    Cringe = "Cringe",
+    Cheesy = "Cheesy",
+    Comeback = "Comeback"
+}
+export enum EmojiType {
+    Laugh = "Laugh",
+    Skull = "Skull",
+    Fire = "Fire",
+    Heart = "Heart"
 }
 export enum Status {
     pending = "pending",
@@ -104,22 +145,43 @@ export enum Status {
     rejected = "rejected"
 }
 export interface backendInterface {
+    addEmojiReaction(id: bigint, emoji: EmojiType): Promise<void>;
     approvePickupLine(id: bigint): Promise<void>;
+    downvotePickupLine(id: bigint): Promise<void>;
     getAllPickupLines(): Promise<Array<PickupLine>>;
     getApprovedPickupLines(): Promise<Array<PickupLine>>;
+    getComments(lineId: bigint): Promise<Array<Comment>>;
+    getLeaderboard(): Promise<Array<LeaderboardEntry>>;
     getLineWithGuide(id: bigint): Promise<{
         howToUse: string;
         pickupLine: PickupLine;
     }>;
     getPendingPickupLines(): Promise<Array<PickupLine>>;
+    getRizzOfTheDay(): Promise<PickupLine | null>;
     likePickupLine(id: bigint): Promise<void>;
+    recordCopy(id: bigint): Promise<void>;
     rejectPickupLine(id: bigint): Promise<void>;
     reportPickupLine(id: bigint): Promise<void>;
-    submitPickupLine(text: string, instagramUrl: string | null): Promise<void>;
+    submitComment(lineId: bigint, text: string, username: string): Promise<void>;
+    submitPickupLine(text: string, instagramUrl: string | null, username: string | null, category: Category): Promise<void>;
 }
-import type { PickupLine as _PickupLine, Status as _Status } from "./declarations/backend.did.d.ts";
+import type { Category as _Category, EmojiReactions as _EmojiReactions, EmojiType as _EmojiType, PickupLine as _PickupLine, Status as _Status } from "./declarations/backend.did.d.ts";
 export class Backend implements backendInterface {
     constructor(private actor: ActorSubclass<_SERVICE>, private _uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, private _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, private processError?: (error: unknown) => never){}
+    async addEmojiReaction(arg0: bigint, arg1: EmojiType): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.addEmojiReaction(arg0, to_candid_EmojiType_n1(this._uploadFile, this._downloadFile, arg1));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.addEmojiReaction(arg0, to_candid_EmojiType_n1(this._uploadFile, this._downloadFile, arg1));
+            return result;
+        }
+    }
     async approvePickupLine(arg0: bigint): Promise<void> {
         if (this.processError) {
             try {
@@ -134,32 +196,74 @@ export class Backend implements backendInterface {
             return result;
         }
     }
+    async downvotePickupLine(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.downvotePickupLine(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.downvotePickupLine(arg0);
+            return result;
+        }
+    }
     async getAllPickupLines(): Promise<Array<PickupLine>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getAllPickupLines();
-                return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n3(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getAllPickupLines();
-            return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n3(this._uploadFile, this._downloadFile, result);
         }
     }
     async getApprovedPickupLines(): Promise<Array<PickupLine>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getApprovedPickupLines();
-                return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n3(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getApprovedPickupLines();
-            return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n3(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getComments(arg0: bigint): Promise<Array<Comment>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getComments(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getComments(arg0);
+            return result;
+        }
+    }
+    async getLeaderboard(): Promise<Array<LeaderboardEntry>> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getLeaderboard();
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getLeaderboard();
+            return result;
         }
     }
     async getLineWithGuide(arg0: bigint): Promise<{
@@ -169,28 +273,42 @@ export class Backend implements backendInterface {
         if (this.processError) {
             try {
                 const result = await this.actor.getLineWithGuide(arg0);
-                return from_candid_record_n7(this._uploadFile, this._downloadFile, result);
+                return from_candid_record_n11(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getLineWithGuide(arg0);
-            return from_candid_record_n7(this._uploadFile, this._downloadFile, result);
+            return from_candid_record_n11(this._uploadFile, this._downloadFile, result);
         }
     }
     async getPendingPickupLines(): Promise<Array<PickupLine>> {
         if (this.processError) {
             try {
                 const result = await this.actor.getPendingPickupLines();
-                return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+                return from_candid_vec_n3(this._uploadFile, this._downloadFile, result);
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
             const result = await this.actor.getPendingPickupLines();
-            return from_candid_vec_n1(this._uploadFile, this._downloadFile, result);
+            return from_candid_vec_n3(this._uploadFile, this._downloadFile, result);
+        }
+    }
+    async getRizzOfTheDay(): Promise<PickupLine | null> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.getRizzOfTheDay();
+                return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.getRizzOfTheDay();
+            return from_candid_opt_n12(this._uploadFile, this._downloadFile, result);
         }
     }
     async likePickupLine(arg0: bigint): Promise<void> {
@@ -204,6 +322,20 @@ export class Backend implements backendInterface {
             }
         } else {
             const result = await this.actor.likePickupLine(arg0);
+            return result;
+        }
+    }
+    async recordCopy(arg0: bigint): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.recordCopy(arg0);
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.recordCopy(arg0);
             return result;
         }
     }
@@ -235,58 +367,51 @@ export class Backend implements backendInterface {
             return result;
         }
     }
-    async submitPickupLine(arg0: string, arg1: string | null): Promise<void> {
+    async submitComment(arg0: bigint, arg1: string, arg2: string): Promise<void> {
         if (this.processError) {
             try {
-                const result = await this.actor.submitPickupLine(arg0, to_candid_opt_n8(this._uploadFile, this._downloadFile, arg1));
+                const result = await this.actor.submitComment(arg0, arg1, arg2);
                 return result;
             } catch (e) {
                 this.processError(e);
                 throw new Error("unreachable");
             }
         } else {
-            const result = await this.actor.submitPickupLine(arg0, to_candid_opt_n8(this._uploadFile, this._downloadFile, arg1));
+            const result = await this.actor.submitComment(arg0, arg1, arg2);
+            return result;
+        }
+    }
+    async submitPickupLine(arg0: string, arg1: string | null, arg2: string | null, arg3: Category): Promise<void> {
+        if (this.processError) {
+            try {
+                const result = await this.actor.submitPickupLine(arg0, to_candid_opt_n13(this._uploadFile, this._downloadFile, arg1), to_candid_opt_n13(this._uploadFile, this._downloadFile, arg2), to_candid_Category_n14(this._uploadFile, this._downloadFile, arg3));
+                return result;
+            } catch (e) {
+                this.processError(e);
+                throw new Error("unreachable");
+            }
+        } else {
+            const result = await this.actor.submitPickupLine(arg0, to_candid_opt_n13(this._uploadFile, this._downloadFile, arg1), to_candid_opt_n13(this._uploadFile, this._downloadFile, arg2), to_candid_Category_n14(this._uploadFile, this._downloadFile, arg3));
             return result;
         }
     }
 }
-function from_candid_PickupLine_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PickupLine): PickupLine {
-    return from_candid_record_n3(_uploadFile, _downloadFile, value);
+function from_candid_Category_n9(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Category): Category {
+    return from_candid_variant_n10(_uploadFile, _downloadFile, value);
 }
-function from_candid_Status_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Status): Status {
-    return from_candid_variant_n5(_uploadFile, _downloadFile, value);
+function from_candid_PickupLine_n4(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _PickupLine): PickupLine {
+    return from_candid_record_n5(_uploadFile, _downloadFile, value);
 }
-function from_candid_opt_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
+function from_candid_Status_n6(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: _Status): Status {
+    return from_candid_variant_n7(_uploadFile, _downloadFile, value);
+}
+function from_candid_opt_n12(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [_PickupLine]): PickupLine | null {
+    return value.length === 0 ? null : from_candid_PickupLine_n4(_uploadFile, _downloadFile, value[0]);
+}
+function from_candid_opt_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: [] | [string]): string | null {
     return value.length === 0 ? null : value[0];
 }
-function from_candid_record_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
-    id: bigint;
-    status: _Status;
-    likeCount: bigint;
-    reportCount: bigint;
-    isSystem: boolean;
-    text: string;
-    instagramUrl: [] | [string];
-}): {
-    id: bigint;
-    status: Status;
-    likeCount: bigint;
-    reportCount: bigint;
-    isSystem: boolean;
-    text: string;
-    instagramUrl?: string;
-} {
-    return {
-        id: value.id,
-        status: from_candid_Status_n4(_uploadFile, _downloadFile, value.status),
-        likeCount: value.likeCount,
-        reportCount: value.reportCount,
-        isSystem: value.isSystem,
-        text: value.text,
-        instagramUrl: record_opt_to_undefined(from_candid_opt_n6(_uploadFile, _downloadFile, value.instagramUrl))
-    };
-}
-function from_candid_record_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n11(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     howToUse: string;
     pickupLine: _PickupLine;
 }): {
@@ -295,10 +420,78 @@ function from_candid_record_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint
 } {
     return {
         howToUse: value.howToUse,
-        pickupLine: from_candid_PickupLine_n2(_uploadFile, _downloadFile, value.pickupLine)
+        pickupLine: from_candid_PickupLine_n4(_uploadFile, _downloadFile, value.pickupLine)
     };
 }
-function from_candid_variant_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+function from_candid_record_n5(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    id: bigint;
+    status: _Status;
+    likeCount: bigint;
+    reportCount: bigint;
+    username: [] | [string];
+    isSystem: boolean;
+    text: string;
+    submittedAt: bigint;
+    downvoteCount: bigint;
+    instagramUrl: [] | [string];
+    category: _Category;
+    emojiReactions: _EmojiReactions;
+    copyCount: bigint;
+}): {
+    id: bigint;
+    status: Status;
+    likeCount: bigint;
+    reportCount: bigint;
+    username?: string;
+    isSystem: boolean;
+    text: string;
+    submittedAt: bigint;
+    downvoteCount: bigint;
+    instagramUrl?: string;
+    category: Category;
+    emojiReactions: EmojiReactions;
+    copyCount: bigint;
+} {
+    return {
+        id: value.id,
+        status: from_candid_Status_n6(_uploadFile, _downloadFile, value.status),
+        likeCount: value.likeCount,
+        reportCount: value.reportCount,
+        username: record_opt_to_undefined(from_candid_opt_n8(_uploadFile, _downloadFile, value.username)),
+        isSystem: value.isSystem,
+        text: value.text,
+        submittedAt: value.submittedAt,
+        downvoteCount: value.downvoteCount,
+        instagramUrl: record_opt_to_undefined(from_candid_opt_n8(_uploadFile, _downloadFile, value.instagramUrl)),
+        category: from_candid_Category_n9(_uploadFile, _downloadFile, value.category),
+        emojiReactions: value.emojiReactions,
+        copyCount: value.copyCount
+    };
+}
+function from_candid_variant_n10(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
+    Romantic: null;
+} | {
+    Nerdy: null;
+} | {
+    Smooth: null;
+} | {
+    Uncategorized: null;
+} | {
+    Opener: null;
+} | {
+    Savage: null;
+} | {
+    Funny: null;
+} | {
+    Cringe: null;
+} | {
+    Cheesy: null;
+} | {
+    Comeback: null;
+}): Category {
+    return "Romantic" in value ? Category.Romantic : "Nerdy" in value ? Category.Nerdy : "Smooth" in value ? Category.Smooth : "Uncategorized" in value ? Category.Uncategorized : "Opener" in value ? Category.Opener : "Savage" in value ? Category.Savage : "Funny" in value ? Category.Funny : "Cringe" in value ? Category.Cringe : "Cheesy" in value ? Category.Cheesy : "Comeback" in value ? Category.Comeback : value;
+}
+function from_candid_variant_n7(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: {
     pending: null;
 } | {
     approved: null;
@@ -307,11 +500,79 @@ function from_candid_variant_n5(_uploadFile: (file: ExternalBlob) => Promise<Uin
 }): Status {
     return "pending" in value ? Status.pending : "approved" in value ? Status.approved : "rejected" in value ? Status.rejected : value;
 }
-function from_candid_vec_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_PickupLine>): Array<PickupLine> {
-    return value.map((x)=>from_candid_PickupLine_n2(_uploadFile, _downloadFile, x));
+function from_candid_vec_n3(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Array<_PickupLine>): Array<PickupLine> {
+    return value.map((x)=>from_candid_PickupLine_n4(_uploadFile, _downloadFile, x));
 }
-function to_candid_opt_n8(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: string | null): [] | [string] {
+function to_candid_Category_n14(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Category): _Category {
+    return to_candid_variant_n15(_uploadFile, _downloadFile, value);
+}
+function to_candid_EmojiType_n1(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EmojiType): _EmojiType {
+    return to_candid_variant_n2(_uploadFile, _downloadFile, value);
+}
+function to_candid_opt_n13(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: string | null): [] | [string] {
     return value === null ? candid_none() : candid_some(value);
+}
+function to_candid_variant_n15(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: Category): {
+    Romantic: null;
+} | {
+    Nerdy: null;
+} | {
+    Smooth: null;
+} | {
+    Uncategorized: null;
+} | {
+    Opener: null;
+} | {
+    Savage: null;
+} | {
+    Funny: null;
+} | {
+    Cringe: null;
+} | {
+    Cheesy: null;
+} | {
+    Comeback: null;
+} {
+    return value == Category.Romantic ? {
+        Romantic: null
+    } : value == Category.Nerdy ? {
+        Nerdy: null
+    } : value == Category.Smooth ? {
+        Smooth: null
+    } : value == Category.Uncategorized ? {
+        Uncategorized: null
+    } : value == Category.Opener ? {
+        Opener: null
+    } : value == Category.Savage ? {
+        Savage: null
+    } : value == Category.Funny ? {
+        Funny: null
+    } : value == Category.Cringe ? {
+        Cringe: null
+    } : value == Category.Cheesy ? {
+        Cheesy: null
+    } : value == Category.Comeback ? {
+        Comeback: null
+    } : value;
+}
+function to_candid_variant_n2(_uploadFile: (file: ExternalBlob) => Promise<Uint8Array>, _downloadFile: (file: Uint8Array) => Promise<ExternalBlob>, value: EmojiType): {
+    Laugh: null;
+} | {
+    Skull: null;
+} | {
+    Fire: null;
+} | {
+    Heart: null;
+} {
+    return value == EmojiType.Laugh ? {
+        Laugh: null
+    } : value == EmojiType.Skull ? {
+        Skull: null
+    } : value == EmojiType.Fire ? {
+        Fire: null
+    } : value == EmojiType.Heart ? {
+        Heart: null
+    } : value;
 }
 export interface CreateActorOptions {
     agent?: Agent;

@@ -1,16 +1,30 @@
 import Text "mo:core/Text";
-import Array "mo:core/Array";
-import Map "mo:core/Map";
-import Runtime "mo:core/Runtime";
 import Nat "mo:core/Nat";
-import Char "mo:core/Char";
+import Time "mo:core/Time";
+import Runtime "mo:core/Runtime";
+import Map "mo:core/Map";
+import Array "mo:core/Array";
 import List "mo:core/List";
 import Iter "mo:core/Iter";
+import Migration "migration";
+import Order "mo:core/Order";
 
-
-
+(with migration = Migration.run)
 actor {
   type Status = { #pending; #approved; #rejected };
+
+  type Category = {
+    #Funny;
+    #Smooth;
+    #Cheesy;
+    #Savage;
+    #Romantic;
+    #Nerdy;
+    #Opener;
+    #Comeback;
+    #Cringe;
+    #Uncategorized;
+  };
 
   type PickupLine = {
     id : Nat;
@@ -20,20 +34,55 @@ actor {
     likeCount : Nat;
     isSystem : Bool;
     status : Status;
+    downvoteCount : Nat;
+    category : Category;
+    username : ?Text;
+    copyCount : Nat;
+    emojiReactions : EmojiReactions;
+    submittedAt : Int;
+  };
+
+  type EmojiType = {
+    #Laugh;
+    #Heart;
+    #Fire;
+    #Skull;
+  };
+
+  type EmojiReactions = {
+    laugh : Nat;
+    heart : Nat;
+    fire : Nat;
+    skull : Nat;
+  };
+
+  type Comment = {
+    id : Nat;
+    lineId : Nat;
+    text : Text;
+    username : Text;
+    submittedAt : Int;
+  };
+
+  type LeaderboardEntry = {
+    username : Text;
+    totalUpvotes : Nat;
   };
 
   let pickupLines = Map.empty<Nat, PickupLine>();
+  let comments = Map.empty<Nat, List.List<Comment>>();
   var nextId = 0;
+  var nextCommentId = 0;
 
-  public shared ({ caller }) func submitPickupLine(text : Text, instagramUrl : ?Text) : async () {
+  public shared ({ caller }) func submitPickupLine(
+    text : Text,
+    instagramUrl : ?Text,
+    username : ?Text,
+    category : Category,
+  ) : async () {
     let cleanedText = text.trim(#char ' ');
-
     if (cleanedText.size() == 0 or cleanedText.size() > 1000) {
       Runtime.trap("Pickup line must not be empty and must be less than 1000 characters.");
-    };
-
-    if (not isMultiline(cleanedText)) {
-      Runtime.trap("Pickup line must be multi-line with at least 2 separate lines.");
     };
 
     let pickupLine : PickupLine = {
@@ -44,6 +93,17 @@ actor {
       likeCount = 0;
       isSystem = false;
       status = #pending;
+      downvoteCount = 0;
+      category;
+      username;
+      copyCount = 0;
+      emojiReactions = {
+        laugh = 0;
+        heart = 0;
+        fire = 0;
+        skull = 0;
+      };
+      submittedAt = Time.now();
     };
 
     pickupLines.add(nextId, pickupLine);
@@ -134,10 +194,20 @@ actor {
     nonEmptyLines.size() >= 3;
   };
 
+  func getRT() : Text {
+    "Func was removed for testing purposes";
+  };
+
   func generateHowToUseGuide(pickupLine : Text) : Text {
     let timing = getTimingAdvice(getNumberOfLines(pickupLine));
     let context = getContextAdvice(pickupLine);
-    let lineType = detectLineType(pickupLine);
+    let lineType = if (
+      pickupLine.contains(#text("classic")) or pickupLine.contains(#text("CLASSIC"))
+    ) {
+      "classic";
+    } else {
+      detectLineType(pickupLine);
+    };
     let sectionDivider = "\n——————————————————————————————————————————————————————\n";
     let delivery = "Deliver each line with a touch of confidence, hitting the right tone for the situation. Treat each exchange as a playful back-and-forth, pausing for genuine reactions between lines.";
     let contextFormatted = "Context:\n" # context # sectionDivider;
@@ -188,9 +258,7 @@ actor {
   };
 
   func toLowerCase(text : Text) : Text {
-    let chars = List.empty<Char>();
-    text.chars().forEach(func(char) { chars.add(char) });
-    Text.fromIter(chars.values());
+    text.toLower();
   };
 
   func detectLineType(pickupLine : Text) : Text {
@@ -351,5 +419,145 @@ actor {
     let lines = text.split(#char '\n').toArray();
     let nonEmptyLines = lines.filter(func(line) { line.trim(#char ' ').size() > 0 });
     nonEmptyLines.size();
+  };
+
+  // New features implementation
+  public shared ({ caller }) func downvotePickupLine(id : Nat) : async () {
+    switch (pickupLines.get(id)) {
+      case (null) { Runtime.trap("Pickup line does not exist") };
+      case (?pickupLine) {
+        let updatedPickupLine = { pickupLine with downvoteCount = pickupLine.downvoteCount + 1 };
+        pickupLines.add(id, updatedPickupLine);
+      };
+    };
+  };
+
+  public shared ({ caller }) func recordCopy(id : Nat) : async () {
+    switch (pickupLines.get(id)) {
+      case (null) { Runtime.trap("Pickup line does not exist") };
+      case (?pickupLine) {
+        let updatedPickupLine = { pickupLine with copyCount = pickupLine.copyCount + 1 };
+        pickupLines.add(id, updatedPickupLine);
+      };
+    };
+  };
+
+  public shared ({ caller }) func addEmojiReaction(id : Nat, emoji : EmojiType) : async () {
+    switch (pickupLines.get(id)) {
+      case (null) { Runtime.trap("Pickup line does not exist") };
+      case (?pickupLine) {
+        let updatedReactions = switch (emoji) {
+          case (#Laugh) { { pickupLine.emojiReactions with laugh = pickupLine.emojiReactions.laugh + 1 } };
+          case (#Heart) { { pickupLine.emojiReactions with heart = pickupLine.emojiReactions.heart + 1 } };
+          case (#Fire) { { pickupLine.emojiReactions with fire = pickupLine.emojiReactions.fire + 1 } };
+          case (#Skull) { { pickupLine.emojiReactions with skull = pickupLine.emojiReactions.skull + 1 } };
+        };
+        let updatedPickupLine = { pickupLine with emojiReactions = updatedReactions };
+        pickupLines.add(id, updatedPickupLine);
+      };
+    };
+  };
+
+  public query ({ caller }) func getRizzOfTheDay() : async ?PickupLine {
+    let now = Time.now();
+    let lines = pickupLines.values().toArray();
+
+    let todayLines = lines.filter(
+      func(line) {
+        let timeDiff = now - line.submittedAt;
+        timeDiff >= 0 and timeDiff < 86_400_000_000_000
+      }
+    );
+
+    func compareLines(a : PickupLine, b : PickupLine) : Order.Order {
+      let aScore = a.likeCount;
+      let bScore = b.likeCount;
+      if (aScore < bScore) { #greater } else if (aScore > bScore) { #less } else {
+        #equal;
+      };
+    };
+
+    if (todayLines.size() == 0) {
+      return null;
+    };
+
+    let sortedTodayLines = todayLines.sort(compareLines);
+    ?sortedTodayLines[0];
+  };
+
+  public query ({ caller }) func getLeaderboard() : async [LeaderboardEntry] {
+    let leaderboardMap = Map.empty<Text, Nat>();
+
+    for (pickupLine in pickupLines.values()) {
+      switch (pickupLine.username) {
+        case (null) {};
+        case (?username) {
+          let prevCount = switch (leaderboardMap.get(username)) {
+            case (null) { 0 };
+            case (?count) { count };
+          };
+          leaderboardMap.add(username, prevCount + pickupLine.likeCount);
+        };
+      };
+    };
+
+    let leaderboardArray = leaderboardMap.toArray().map(
+      func((username, totalUpvotes)) {
+        {
+          username;
+          totalUpvotes;
+        };
+      }
+    );
+
+    leaderboardArray.sort(
+      func(a, b) {
+        if (a.totalUpvotes < b.totalUpvotes) { #less } else if (a.totalUpvotes > b.totalUpvotes) {
+          #greater;
+        } else { #equal };
+      }
+    );
+  };
+
+  public shared ({ caller }) func submitComment(lineId : Nat, text : Text, username : Text) : async () {
+    let cleanedText = text.trim(#char ' ');
+    if (cleanedText.size() == 0 or cleanedText.size() > 500) {
+      Runtime.trap("Comment must not be empty and must be less than 500 characters.");
+    };
+
+    let comment : Comment = {
+      id = nextCommentId;
+      lineId;
+      text = cleanedText;
+      username;
+      submittedAt = Time.now();
+    };
+
+    let existingComments = switch (comments.get(lineId)) {
+      case (null) { List.empty<Comment>() };
+      case (?list) { list };
+    };
+
+    existingComments.add(comment);
+    comments.add(lineId, existingComments);
+    nextCommentId += 1;
+  };
+
+  public query ({ caller }) func getComments(lineId : Nat) : async [Comment] {
+    switch (comments.get(lineId)) {
+      case (null) { [] };
+      case (?list) {
+        let array = list.toArray();
+        array.sort(
+          func(a, b) {
+            if (a.submittedAt < b.submittedAt) { #less } else if (a.submittedAt > b.submittedAt) {
+              #greater;
+            } else {
+              #equal;
+            };
+          }
+        );
+      };
+    };
   };
 };

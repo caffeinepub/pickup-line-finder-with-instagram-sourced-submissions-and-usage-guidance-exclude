@@ -1,5 +1,5 @@
-import { Dices, Plus, ShieldCheck } from "lucide-react";
-import { useState } from "react";
+import { Dices, Moon, Plus, ShieldCheck, Sun } from "lucide-react";
+import { useEffect, useState } from "react";
 import { usePendingPickupLines } from "../hooks/useQueries";
 import { AdminPasswordModal } from "./AdminPasswordModal";
 import { Badge } from "./ui/badge";
@@ -12,6 +12,28 @@ interface AppHeaderProps {
   hasPickupLines: boolean;
 }
 
+function useDarkMode() {
+  const [isDark, setIsDark] = useState(() => {
+    const stored = localStorage.getItem("theme");
+    if (stored) return stored === "dark";
+    return true; // default: dark
+  });
+
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.remove("light");
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      document.documentElement.classList.add("light");
+      localStorage.setItem("theme", "light");
+    }
+  }, [isDark]);
+
+  return { isDark, toggle: () => setIsDark((p) => !p) };
+}
+
 export function AppHeader({
   currentView,
   onViewChange,
@@ -21,6 +43,7 @@ export function AppHeader({
   const [adminModalOpen, setAdminModalOpen] = useState(false);
   const { data: pendingLines } = usePendingPickupLines();
   const pendingCount = pendingLines?.length ?? 0;
+  const { isDark, toggle: toggleDark } = useDarkMode();
 
   return (
     <>
@@ -107,6 +130,24 @@ export function AppHeader({
                   >
                     {pendingCount > 99 ? "99+" : pendingCount}
                   </Badge>
+                )}
+              </Button>
+
+              {/* Dark mode toggle */}
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={toggleDark}
+                className="h-9 w-9 px-0 text-muted-foreground hover:text-foreground hover:bg-muted transition-all"
+                aria-label={
+                  isDark ? "Switch to light mode" : "Switch to dark mode"
+                }
+                data-ocid="nav.toggle"
+              >
+                {isDark ? (
+                  <Sun className="h-4 w-4" />
+                ) : (
+                  <Moon className="h-4 w-4" />
                 )}
               </Button>
             </nav>

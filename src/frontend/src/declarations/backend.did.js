@@ -8,69 +8,173 @@
 
 import { IDL } from '@icp-sdk/core/candid';
 
+export const EmojiType = IDL.Variant({
+  'Laugh' : IDL.Null,
+  'Skull' : IDL.Null,
+  'Fire' : IDL.Null,
+  'Heart' : IDL.Null,
+});
 export const Status = IDL.Variant({
   'pending' : IDL.Null,
   'approved' : IDL.Null,
   'rejected' : IDL.Null,
+});
+export const Category = IDL.Variant({
+  'Romantic' : IDL.Null,
+  'Nerdy' : IDL.Null,
+  'Smooth' : IDL.Null,
+  'Uncategorized' : IDL.Null,
+  'Opener' : IDL.Null,
+  'Savage' : IDL.Null,
+  'Funny' : IDL.Null,
+  'Cringe' : IDL.Null,
+  'Cheesy' : IDL.Null,
+  'Comeback' : IDL.Null,
+});
+export const EmojiReactions = IDL.Record({
+  'heart' : IDL.Nat,
+  'fire' : IDL.Nat,
+  'laugh' : IDL.Nat,
+  'skull' : IDL.Nat,
 });
 export const PickupLine = IDL.Record({
   'id' : IDL.Nat,
   'status' : Status,
   'likeCount' : IDL.Nat,
   'reportCount' : IDL.Nat,
+  'username' : IDL.Opt(IDL.Text),
   'isSystem' : IDL.Bool,
   'text' : IDL.Text,
+  'submittedAt' : IDL.Int,
+  'downvoteCount' : IDL.Nat,
   'instagramUrl' : IDL.Opt(IDL.Text),
+  'category' : Category,
+  'emojiReactions' : EmojiReactions,
+  'copyCount' : IDL.Nat,
+});
+export const Comment = IDL.Record({
+  'id' : IDL.Nat,
+  'username' : IDL.Text,
+  'text' : IDL.Text,
+  'submittedAt' : IDL.Int,
+  'lineId' : IDL.Nat,
+});
+export const LeaderboardEntry = IDL.Record({
+  'username' : IDL.Text,
+  'totalUpvotes' : IDL.Nat,
 });
 
 export const idlService = IDL.Service({
+  'addEmojiReaction' : IDL.Func([IDL.Nat, EmojiType], [], []),
   'approvePickupLine' : IDL.Func([IDL.Nat], [], []),
+  'downvotePickupLine' : IDL.Func([IDL.Nat], [], []),
   'getAllPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
   'getApprovedPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+  'getComments' : IDL.Func([IDL.Nat], [IDL.Vec(Comment)], ['query']),
+  'getLeaderboard' : IDL.Func([], [IDL.Vec(LeaderboardEntry)], ['query']),
   'getLineWithGuide' : IDL.Func(
       [IDL.Nat],
       [IDL.Record({ 'howToUse' : IDL.Text, 'pickupLine' : PickupLine })],
       ['query'],
     ),
   'getPendingPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+  'getRizzOfTheDay' : IDL.Func([], [IDL.Opt(PickupLine)], ['query']),
   'likePickupLine' : IDL.Func([IDL.Nat], [], []),
+  'recordCopy' : IDL.Func([IDL.Nat], [], []),
   'rejectPickupLine' : IDL.Func([IDL.Nat], [], []),
   'reportPickupLine' : IDL.Func([IDL.Nat], [], []),
-  'submitPickupLine' : IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
+  'submitComment' : IDL.Func([IDL.Nat, IDL.Text, IDL.Text], [], []),
+  'submitPickupLine' : IDL.Func(
+      [IDL.Text, IDL.Opt(IDL.Text), IDL.Opt(IDL.Text), Category],
+      [],
+      [],
+    ),
 });
 
 export const idlInitArgs = [];
 
 export const idlFactory = ({ IDL }) => {
+  const EmojiType = IDL.Variant({
+    'Laugh' : IDL.Null,
+    'Skull' : IDL.Null,
+    'Fire' : IDL.Null,
+    'Heart' : IDL.Null,
+  });
   const Status = IDL.Variant({
     'pending' : IDL.Null,
     'approved' : IDL.Null,
     'rejected' : IDL.Null,
+  });
+  const Category = IDL.Variant({
+    'Romantic' : IDL.Null,
+    'Nerdy' : IDL.Null,
+    'Smooth' : IDL.Null,
+    'Uncategorized' : IDL.Null,
+    'Opener' : IDL.Null,
+    'Savage' : IDL.Null,
+    'Funny' : IDL.Null,
+    'Cringe' : IDL.Null,
+    'Cheesy' : IDL.Null,
+    'Comeback' : IDL.Null,
+  });
+  const EmojiReactions = IDL.Record({
+    'heart' : IDL.Nat,
+    'fire' : IDL.Nat,
+    'laugh' : IDL.Nat,
+    'skull' : IDL.Nat,
   });
   const PickupLine = IDL.Record({
     'id' : IDL.Nat,
     'status' : Status,
     'likeCount' : IDL.Nat,
     'reportCount' : IDL.Nat,
+    'username' : IDL.Opt(IDL.Text),
     'isSystem' : IDL.Bool,
     'text' : IDL.Text,
+    'submittedAt' : IDL.Int,
+    'downvoteCount' : IDL.Nat,
     'instagramUrl' : IDL.Opt(IDL.Text),
+    'category' : Category,
+    'emojiReactions' : EmojiReactions,
+    'copyCount' : IDL.Nat,
+  });
+  const Comment = IDL.Record({
+    'id' : IDL.Nat,
+    'username' : IDL.Text,
+    'text' : IDL.Text,
+    'submittedAt' : IDL.Int,
+    'lineId' : IDL.Nat,
+  });
+  const LeaderboardEntry = IDL.Record({
+    'username' : IDL.Text,
+    'totalUpvotes' : IDL.Nat,
   });
   
   return IDL.Service({
+    'addEmojiReaction' : IDL.Func([IDL.Nat, EmojiType], [], []),
     'approvePickupLine' : IDL.Func([IDL.Nat], [], []),
+    'downvotePickupLine' : IDL.Func([IDL.Nat], [], []),
     'getAllPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
     'getApprovedPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+    'getComments' : IDL.Func([IDL.Nat], [IDL.Vec(Comment)], ['query']),
+    'getLeaderboard' : IDL.Func([], [IDL.Vec(LeaderboardEntry)], ['query']),
     'getLineWithGuide' : IDL.Func(
         [IDL.Nat],
         [IDL.Record({ 'howToUse' : IDL.Text, 'pickupLine' : PickupLine })],
         ['query'],
       ),
     'getPendingPickupLines' : IDL.Func([], [IDL.Vec(PickupLine)], ['query']),
+    'getRizzOfTheDay' : IDL.Func([], [IDL.Opt(PickupLine)], ['query']),
     'likePickupLine' : IDL.Func([IDL.Nat], [], []),
+    'recordCopy' : IDL.Func([IDL.Nat], [], []),
     'rejectPickupLine' : IDL.Func([IDL.Nat], [], []),
     'reportPickupLine' : IDL.Func([IDL.Nat], [], []),
-    'submitPickupLine' : IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
+    'submitComment' : IDL.Func([IDL.Nat, IDL.Text, IDL.Text], [], []),
+    'submitPickupLine' : IDL.Func(
+        [IDL.Text, IDL.Opt(IDL.Text), IDL.Opt(IDL.Text), Category],
+        [],
+        [],
+      ),
   });
 };
 

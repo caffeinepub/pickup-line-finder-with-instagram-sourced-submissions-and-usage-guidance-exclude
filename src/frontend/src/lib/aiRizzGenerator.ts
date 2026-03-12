@@ -399,3 +399,103 @@ export function generateAiLines(topic: string): string[] {
   }
   return findBestMatch(topic);
 }
+
+/**
+ * Takes a user's rizz line and generates 3 improved, smoother versions.
+ * Applies transformation templates: question form, callback, confidence boost,
+ * story hook, metaphor, role reversal, and more.
+ */
+export function improveRizzLine(line: string): string[] {
+  const trimmed = line.trim();
+  if (!trimmed) return [];
+
+  // Extract a short version for templates
+  const firstLine = trimmed.split("\n")[0].trim();
+  const shortLine =
+    firstLine.length > 60 ? `${firstLine.slice(0, 57)}...` : firstLine;
+
+  // 20 improvement templates — each returns a transformed multi-line version
+  const templates: Array<(l: string) => string> = [
+    // 1. Turn it into a confident question
+    (l) =>
+      `Can I ask you something?\n\n${l}\n\nOr did I just answer my own question?`,
+
+    // 2. Add a callback / follow-up
+    (l) =>
+      `${l}\n\nAnd yes, I've been waiting to say that\n\nfor the entire conversation.`,
+
+    // 3. Confidence boost — own it
+    (l) =>
+      `I know this is forward,\n\nbut — ${l.charAt(0).toLowerCase() + l.slice(1)}\n\nI just needed you to know.`,
+
+    // 4. Story hook opener
+    (l) =>
+      `Okay so hear me out:\n\n${l}\n\nI've been workshopping that line for about three seconds and I stand by it.`,
+
+    // 5. Slower, more deliberate pacing
+    (l) =>
+      `${l}\n\n…I've been holding onto that\n\nfor longer than I'd like to admit.`,
+
+    // 6. Turn it into a soft observation
+    (l) =>
+      `Not sure if you've noticed,\n\nbut ${l.charAt(0).toLowerCase() + l.slice(1)}\n\nJust thought you should hear it.`,
+
+    // 7. Callback to a hypothetical
+    (l) => `If I could tell you one thing today,\n\nit would be this:\n\n${l}`,
+
+    // 8. Self-aware but smooth
+    (l) => `I told myself I wasn't going to say anything.\n\nBut then:\n\n${l}`,
+
+    // 9. Playful challenge
+    (l) => `${l}\n\nFeel free to disagree —\n\nbut we both know I'm right.`,
+
+    // 10. Pull back and re-deliver
+    (l) =>
+      `I had a whole thing planned.\n\nThen I saw you and forgot all of it.\n\nSo all I've got is: ${l.charAt(0).toLowerCase() + l.slice(1)}`,
+
+    // 11. Make it a slow reveal
+    (l) => `You know what I've been thinking?\n\n${l}\n\nThere. I said it.`,
+
+    // 12. Add layered wit
+    (l) =>
+      `Okay, this is either incredibly smooth\n\nor the most embarrassing thing I've ever said:\n\n${l}`,
+
+    // 13. Reframe as a compliment chain
+    (l) =>
+      `First: you look incredible.\n\nSecond: ${l.charAt(0).toLowerCase() + l.slice(1)}\n\nThird: I'd love to continue this in person.`,
+
+    // 14. Hypothetical pivot
+    (l) => `Hypothetically speaking —\n\n${l}\n\nHypothetically.`,
+
+    // 15. "I shouldn't say this but..."
+    (l) =>
+      `I probably shouldn't say this, but:\n\n${l}\n\nOkay I said it. Your move.`,
+
+    // 16. Deadpan confidence
+    (l) => `${l}\n\nI'm not even nervous.\n\nThat's how sure I am.`,
+
+    // 17. Start with the payoff
+    (l) =>
+      `The short version: ${l.charAt(0).toLowerCase() + l.slice(1)}\n\nThe long version requires coffee\n\nand a much better view of you.`,
+
+    // 18. Echo and expand
+    (l) =>
+      `${l}\n\nAnd honestly?\n\nThat's the most honest I've been all week.`,
+
+    // 19. Add stakes
+    (l) =>
+      `I've thought about not saying this.\n\nI've thought about saying this.\n\nI chose: ${l.charAt(0).toLowerCase() + l.slice(1)}`,
+
+    // 20. Turn it into an invitation
+    (l) => `${l}\n\nAnd if that doesn't work,\n\nat least it's a good story.`,
+  ];
+
+  // Pick 3 varied templates using the short version for display clarity
+  const indices = [
+    Math.floor(Math.random() * 7), // group 1: 0-6
+    7 + Math.floor(Math.random() * 7), // group 2: 7-13
+    14 + Math.floor(Math.random() * 6), // group 3: 14-19
+  ];
+
+  return indices.map((i) => templates[i](shortLine));
+}

@@ -1,5 +1,11 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { PickupLine } from "../backend";
+import type {
+  Category,
+  Comment,
+  EmojiType,
+  LeaderboardEntry,
+  PickupLine,
+} from "../backend";
 import { useActor } from "./useActor";
 
 export function usePickupLines() {
@@ -61,9 +67,16 @@ export function useSubmitPickupLine() {
     mutationFn: async ({
       text,
       instagramUrl,
-    }: { text: string; instagramUrl: string | null }) => {
+      username,
+      category,
+    }: {
+      text: string;
+      instagramUrl: string | null;
+      username: string | null;
+      category: Category;
+    }) => {
       if (!actor) throw new Error("Actor not initialized");
-      return actor.submitPickupLine(text, instagramUrl);
+      return actor.submitPickupLine(text, instagramUrl, username, category);
     },
     onSuccess: () => {
       // Immediately refetch the pickup lines instead of just invalidating
@@ -152,6 +165,118 @@ export function useLikePickupLine() {
     },
     onSuccess: () => {
       queryClient.refetchQueries({ queryKey: ["approvedPickupLines"] });
+      queryClient.refetchQueries({ queryKey: ["rizzOfTheDay"] });
+    },
+  });
+}
+
+export function useDownvotePickupLine() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: bigint) => {
+      if (!actor) throw new Error("Actor not initialized");
+      return actor.downvotePickupLine(id);
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ["approvedPickupLines"] });
+    },
+  });
+}
+
+export function useRecordCopy() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: bigint) => {
+      if (!actor) throw new Error("Actor not initialized");
+      return actor.recordCopy(id);
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ["approvedPickupLines"] });
+    },
+  });
+}
+
+export function useAddEmojiReaction() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ id, emoji }: { id: bigint; emoji: EmojiType }) => {
+      if (!actor) throw new Error("Actor not initialized");
+      return actor.addEmojiReaction(id, emoji);
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries({ queryKey: ["approvedPickupLines"] });
+    },
+  });
+}
+
+export function useRizzOfTheDay() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<PickupLine | null>({
+    queryKey: ["rizzOfTheDay"],
+    queryFn: async () => {
+      if (!actor) return null;
+      return actor.getRizzOfTheDay();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 60000,
+    staleTime: 30000,
+  });
+}
+
+export function useLeaderboard() {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<LeaderboardEntry[]>({
+    queryKey: ["leaderboard"],
+    queryFn: async () => {
+      if (!actor) return [];
+      return actor.getLeaderboard();
+    },
+    enabled: !!actor && !isFetching,
+    refetchInterval: 30000,
+    staleTime: 15000,
+  });
+}
+
+export function useComments(lineId: bigint | null) {
+  const { actor, isFetching } = useActor();
+
+  return useQuery<Comment[]>({
+    queryKey: ["comments", lineId?.toString()],
+    queryFn: async () => {
+      if (!actor || lineId === null) return [];
+      return actor.getComments(lineId);
+    },
+    enabled: !!actor && !isFetching && lineId !== null,
+    refetchInterval: 10000,
+    staleTime: 5000,
+  });
+}
+
+export function useSubmitComment() {
+  const { actor } = useActor();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      lineId,
+      text,
+      username,
+    }: { lineId: bigint; text: string; username: string }) => {
+      if (!actor) throw new Error("Actor not initialized");
+      return actor.submitComment(lineId, text, username);
+    },
+    onSuccess: (_data, variables) => {
+      queryClient.refetchQueries({
+        queryKey: ["comments", variables.lineId.toString()],
+      });
     },
   });
 }

@@ -10,31 +10,78 @@ import type { ActorMethod } from '@icp-sdk/core/agent';
 import type { IDL } from '@icp-sdk/core/candid';
 import type { Principal } from '@icp-sdk/core/principal';
 
+export type Category = { 'Romantic' : null } |
+  { 'Nerdy' : null } |
+  { 'Smooth' : null } |
+  { 'Uncategorized' : null } |
+  { 'Opener' : null } |
+  { 'Savage' : null } |
+  { 'Funny' : null } |
+  { 'Cringe' : null } |
+  { 'Cheesy' : null } |
+  { 'Comeback' : null };
+export interface Comment {
+  'id' : bigint,
+  'username' : string,
+  'text' : string,
+  'submittedAt' : bigint,
+  'lineId' : bigint,
+}
+export interface EmojiReactions {
+  'heart' : bigint,
+  'fire' : bigint,
+  'laugh' : bigint,
+  'skull' : bigint,
+}
+export type EmojiType = { 'Laugh' : null } |
+  { 'Skull' : null } |
+  { 'Fire' : null } |
+  { 'Heart' : null };
+export interface LeaderboardEntry {
+  'username' : string,
+  'totalUpvotes' : bigint,
+}
 export interface PickupLine {
   'id' : bigint,
   'status' : Status,
   'likeCount' : bigint,
   'reportCount' : bigint,
+  'username' : [] | [string],
   'isSystem' : boolean,
   'text' : string,
+  'submittedAt' : bigint,
+  'downvoteCount' : bigint,
   'instagramUrl' : [] | [string],
+  'category' : Category,
+  'emojiReactions' : EmojiReactions,
+  'copyCount' : bigint,
 }
 export type Status = { 'pending' : null } |
   { 'approved' : null } |
   { 'rejected' : null };
 export interface _SERVICE {
+  'addEmojiReaction' : ActorMethod<[bigint, EmojiType], undefined>,
   'approvePickupLine' : ActorMethod<[bigint], undefined>,
+  'downvotePickupLine' : ActorMethod<[bigint], undefined>,
   'getAllPickupLines' : ActorMethod<[], Array<PickupLine>>,
   'getApprovedPickupLines' : ActorMethod<[], Array<PickupLine>>,
+  'getComments' : ActorMethod<[bigint], Array<Comment>>,
+  'getLeaderboard' : ActorMethod<[], Array<LeaderboardEntry>>,
   'getLineWithGuide' : ActorMethod<
     [bigint],
     { 'howToUse' : string, 'pickupLine' : PickupLine }
   >,
   'getPendingPickupLines' : ActorMethod<[], Array<PickupLine>>,
+  'getRizzOfTheDay' : ActorMethod<[], [] | [PickupLine]>,
   'likePickupLine' : ActorMethod<[bigint], undefined>,
+  'recordCopy' : ActorMethod<[bigint], undefined>,
   'rejectPickupLine' : ActorMethod<[bigint], undefined>,
   'reportPickupLine' : ActorMethod<[bigint], undefined>,
-  'submitPickupLine' : ActorMethod<[string, [] | [string]], undefined>,
+  'submitComment' : ActorMethod<[bigint, string, string], undefined>,
+  'submitPickupLine' : ActorMethod<
+    [string, [] | [string], [] | [string], Category],
+    undefined
+  >,
 }
 export declare const idlService: IDL.ServiceClass;
 export declare const idlInitArgs: IDL.Type[];

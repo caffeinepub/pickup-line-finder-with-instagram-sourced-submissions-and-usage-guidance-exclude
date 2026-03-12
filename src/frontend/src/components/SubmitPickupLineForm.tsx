@@ -1,5 +1,13 @@
-import { AlertCircle, Instagram, Loader2, Send, Sparkles } from "lucide-react";
+import {
+  AlertCircle,
+  Instagram,
+  Loader2,
+  Send,
+  Sparkles,
+  User,
+} from "lucide-react";
 import { useState } from "react";
+import { Category } from "../backend";
 import { useSubmitPickupLine } from "../hooks/useQueries";
 import { validatePickupLine } from "../lib/validation";
 import { Alert, AlertDescription } from "./ui/alert";
@@ -7,15 +15,37 @@ import { Button } from "./ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Input } from "./ui/input";
 import { Label } from "./ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 import { Textarea } from "./ui/textarea";
 
 interface SubmitPickupLineFormProps {
   onSuccess: () => void;
 }
 
+const CATEGORIES = [
+  { value: Category.Uncategorized, label: "Uncategorized" },
+  { value: Category.Funny, label: "😂 Funny" },
+  { value: Category.Smooth, label: "😏 Smooth" },
+  { value: Category.Cheesy, label: "🧀 Cheesy" },
+  { value: Category.Savage, label: "🔥 Savage" },
+  { value: Category.Romantic, label: "❤️ Romantic" },
+  { value: Category.Nerdy, label: "🤓 Nerdy" },
+  { value: Category.Opener, label: "👋 Opener" },
+  { value: Category.Comeback, label: "💬 Comeback" },
+  { value: Category.Cringe, label: "😬 Cringe" },
+];
+
 export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
   const [text, setText] = useState("");
   const [instagramUrl, setInstagramUrl] = useState("");
+  const [username, setUsername] = useState("");
+  const [category, setCategory] = useState<Category>(Category.Uncategorized);
   const [validationError, setValidationError] = useState<string | null>(null);
   const submitMutation = useSubmitPickupLine();
 
@@ -33,9 +63,13 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
       await submitMutation.mutateAsync({
         text: text.trim(),
         instagramUrl: instagramUrl.trim() || null,
+        username: username.trim() || null,
+        category,
       });
       setText("");
       setInstagramUrl("");
+      setUsername("");
+      setCategory(Category.Uncategorized);
       onSuccess();
     } catch (error) {
       setValidationError(
@@ -157,6 +191,64 @@ export function SubmitPickupLineForm({ onSuccess }: SubmitPickupLineFormProps) {
                   className="text-sm bg-background/50 border-border/60 focus:border-primary/50 focus:ring-primary/20 text-foreground placeholder:text-muted-foreground/40"
                   disabled={isSubmitting}
                 />
+              </div>
+
+              {/* Username */}
+              <div className="space-y-2">
+                <Label
+                  htmlFor="username"
+                  className="text-sm font-semibold text-foreground flex items-center gap-2"
+                >
+                  <User className="h-3.5 w-3.5 text-muted-foreground" />
+                  Your Username{" "}
+                  <span className="text-muted-foreground font-normal text-xs">
+                    (Optional)
+                  </span>
+                </Label>
+                <Input
+                  id="username"
+                  type="text"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="e.g. rizz_king_42"
+                  className="text-sm bg-background/50 border-border/60 focus:border-primary/50 focus:ring-primary/20 text-foreground placeholder:text-muted-foreground/40"
+                  disabled={isSubmitting}
+                  maxLength={50}
+                  data-ocid="submit.input"
+                />
+              </div>
+
+              {/* Category */}
+              <div className="space-y-2">
+                <Label className="text-sm font-semibold text-foreground">
+                  Category{" "}
+                  <span className="text-muted-foreground font-normal text-xs">
+                    (Optional)
+                  </span>
+                </Label>
+                <Select
+                  value={category}
+                  onValueChange={(val) => setCategory(val as Category)}
+                  disabled={isSubmitting}
+                >
+                  <SelectTrigger
+                    className="text-sm bg-background/50 border-border/60 focus:border-primary/50 text-foreground"
+                    data-ocid="submit.select"
+                  >
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                  <SelectContent className="bg-popover border-border/60">
+                    {CATEGORIES.map((cat) => (
+                      <SelectItem
+                        key={cat.value}
+                        value={cat.value}
+                        className="text-sm"
+                      >
+                        {cat.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
 
               {/* Validation error */}
